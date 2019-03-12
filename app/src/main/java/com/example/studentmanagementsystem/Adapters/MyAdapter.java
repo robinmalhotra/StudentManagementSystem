@@ -1,29 +1,31 @@
-package com.example.studentmanagementsystem;
+package com.example.studentmanagementsystem.Adapters;
 
-import android.content.Context;
+
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Layout;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
 import android.widget.TextView;
+
+import com.example.studentmanagementsystem.R;
+import com.example.studentmanagementsystem.StudentClass.StudentTemplate;
 
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder> {
 
     //variables of the adpater class.
-    ArrayList<StudentTemplate> studentList;
+    private ArrayList<StudentTemplate> studentList;
     private onItemClickListener mListener;
 
-    //interface to implement onClick.
     public MyAdapter(ArrayList<StudentTemplate> studentList) {
         this.studentList = studentList;
     }
+
 
     @NonNull
     @Override
@@ -45,6 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder>
         studentViewHolder.roll.setText(studentList.get(i).getStudentTemplateRoll());
         studentViewHolder.age.setText(studentList.get(i).getStudentTemplateAge());
 
+        Log.d("robss", "onBindViewHolder: started" + studentList.get(i));
     }
 
     @Override
@@ -60,14 +63,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder>
 
             super(itemView);
 
-            name = (TextView) itemView.findViewById(R.id.nameEmpty);
-            standard = (TextView)itemView.findViewById(R.id.standardEmpty);
-            roll = (TextView)itemView.findViewById(R.id.rollEmpty);
-            age = (TextView)itemView.findViewById(R.id.ageEmpty);
+            name = (TextView) itemView.findViewById(R.id.tvNameEmpty);
+            standard = (TextView)itemView.findViewById(R.id.tvStandardEmpty);
+            roll = (TextView)itemView.findViewById(R.id.tvRollEmpty);
+            age = (TextView)itemView.findViewById(R.id.tvAgeEmpty);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener!=null) {
+                    if(listener!=null) {
                         int i = getAdapterPosition();
                         if(i != RecyclerView.NO_POSITION) {
                             listener.onItemClick(i);
@@ -82,7 +85,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder>
     public interface onItemClickListener {
         void onItemClick (int position);
     }
-
+    //Sets the listener to the private fields of the Adapter Class.
     public void setOnItemClickListener(onItemClickListener listener) {
         mListener = listener;
     }

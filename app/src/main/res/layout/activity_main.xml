@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".Student.MainActivity"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/messageLayout"
+        android:id="@+id/llMessageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -17,7 +17,7 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_list"
+        android:id="@+id/rlRecycler_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -25,7 +25,7 @@
         />
 
     <Button
-        android:id="@+id/add_student_button"
+        android:id="@+id/btnAdd_student_button"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

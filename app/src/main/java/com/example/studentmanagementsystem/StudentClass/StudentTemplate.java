@@ -1,13 +1,9 @@
-package com.example.studentmanagementsystem;
+package com.example.studentmanagementsystem.StudentClass;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.EditText;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-public class StudentTemplate implements Serializable, Cloneable {
+public class StudentTemplate implements Parcelable {
 
     private String studentTemplateName;
     private String studentTemplateRoll;
@@ -27,6 +23,18 @@ public class StudentTemplate implements Serializable, Cloneable {
         studentTemplateStandard = in.readString();
         studentTemplateAge = in.readString();
     }
+
+    public static final Creator<StudentTemplate> CREATOR = new Creator<StudentTemplate>() {
+        @Override
+        public StudentTemplate createFromParcel(Parcel in) {
+            return new StudentTemplate(in);
+        }
+
+        @Override
+        public StudentTemplate[] newArray(int size) {
+            return new StudentTemplate[size];
+        }
+    };
 
     //Getter Methods.
     public String getStudentTemplateName() {
@@ -60,5 +68,18 @@ public class StudentTemplate implements Serializable, Cloneable {
 
     public void setStudentTemplateAge(String studentTemplateAge) {
         this.studentTemplateAge = studentTemplateAge;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(studentTemplateName);
+        dest.writeString(studentTemplateRoll);
+        dest.writeString(studentTemplateStandard);
+        dest.writeString(studentTemplateAge);
     }
 }

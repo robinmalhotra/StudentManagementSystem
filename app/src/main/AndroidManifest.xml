@@ -9,9 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IndividualProperties"></activity>
-        <activity android:name=".CreateStudent"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".Student.CreateStudent"></activity>
+        <activity android:name=".Student.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

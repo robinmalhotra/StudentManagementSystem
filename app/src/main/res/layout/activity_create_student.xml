@@ -4,19 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateStudent">
+    tools:context=".Student.CreateStudent"
+    android:background="@color/colorPrimaryDark">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvAddStudentDetails"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/cardview_light_background"
         android:text="@string/add_student_details" />
     <TextView
         android:id="@+id/tvStudentDetails"
+        android:textColor="@color/cardview_light_background"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,58 +30,68 @@
         android:text="@string/details_student" />
 
     <EditText
-        android:id="@+id/studentNameText"
-        android:layout_below="@+id/textView2"
+        android:id="@+id/etStudentNameText"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/cardview_light_background"
+        android:layout_below="@+id/tvAddStudentDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Enter Name"
+        android:hint="@string/namehint"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/studentRollNumberText"
-        android:layout_below="@+id/studentNameText"
+        android:id="@+id/etStudentRollNumberText"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/cardview_light_background"
+        android:layout_below="@+id/etStudentNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Roll Number"
+        android:hint="@string/rollhint"
         android:inputType="number" />
 
 
     <EditText
-        android:id="@+id/studentStandardText"
-        android:layout_below="@+id/studentRollNumberText"
+        android:id="@+id/etStudentStandardText"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/cardview_light_background"
+        android:layout_below="@+id/etStudentRollNumberText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Standard"
+        android:hint="@string/standardhint"
         android:inputType="number"
         tools:layout_editor_absoluteX="52dp"
         tools:layout_editor_absoluteY="343dp" />
 
     <EditText
-        android:id="@+id/studentAgeText"
-        android:layout_below="@+id/studentStandardText"
+        android:id="@+id/etStudentAgeText"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/cardview_light_background"
+        android:layout_below="@+id/etStudentStandardText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Age"
+        android:hint="@string/agehint"
         android:inputType="number" />
 
     <Button
-        android:id="@+id/saveStudent"
+        android:id="@+id/btnSaveStudent"
         android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/studentAgeText"
-        android:text="Save Student"
+        android:layout_below="@+id/etStudentAgeText"
+        android:text="@string/save_student_button"
         android:onClick="addStudentButton"
         android:visibility="visible"/>
 
     <Button
-        android:id="@+id/updateStudent"
+        android:id="@+id/btnUpdateStudent"
         android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/studentAgeText"
-        android:text="Update Student"
+        android:layout_below="@+id/etStudentAgeText"
+        android:text="@string/update_student_button"
         android:onClick="updateStudentButton"
         android:visibility="visible"/>
 

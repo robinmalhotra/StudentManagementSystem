@@ -3,4 +3,10 @@
     <string name="add_student_details">Add Student Details</string>
     <string name="student_individual_string">STUDENT_VALUES</string>
     <string name="details_student">Student Details</string>
+    <string name="namehint">Enter Name</string>
+    <string name="rollhint">Roll Number</string>
+    <string name="standardhint">Standard</string>
+    <string name="agehint">Age</string>
+    <string name="save_student_button">Save Student</string>
+    <string name="update_student_button">Update Student</string>
 </resources>
