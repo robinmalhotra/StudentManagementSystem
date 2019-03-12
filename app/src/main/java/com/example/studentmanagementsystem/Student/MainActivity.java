@@ -3,6 +3,7 @@ package com.example.studentmanagementsystem.Student;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,15 +33,11 @@ public class MainActivity extends AppCompatActivity  {
     //Create an ArrayList to save the data.
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
     private ArrayList<Integer> currentRollList;
-
-
-    //Have a Recycler View of own to save the Recycler View from activity_main.xml
     private RecyclerView recyclerView;
     private MyAdapter adapter;
     public static final int CODE_TO_ADD_STUDENT=101;
     public static final int CODE_TO_VIEW_STUDENT=102;
     public static final int CODE_TO_EDIT_STUDENT=103;
-
     private int POSITION_STUDENT;
 
 
@@ -48,19 +45,17 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.rlRecycler_list);
-        //All the elements will have fixed size.
+
+        recyclerView = findViewById(R.id.rlRecycler_list);
         recyclerView.setHasFixedSize(true);
-
-
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this);
 
         //Set the Layout of Recyclerview to be linear. Default: Vertical.
         recyclerView.setLayoutManager(linearLayoutManager);
-
         adapter = new MyAdapter(this.mStudentList);
         recyclerView.setAdapter(adapter);
+
         //Adapter has a listener interface implemented.
         adapter.setOnItemClickListener(new MyAdapter.onItemClickListener() {
             @Override
@@ -85,16 +80,15 @@ public class MainActivity extends AppCompatActivity  {
 
                         switch (which) {
                             case viewStudent:
-                                //Send the intent if the User choses the VIEW option.
+                                //Send the intent if the User chooses the VIEW option.
                                     Intent forView = new Intent(MainActivity.this,
                                             CreateStudent.class);
                                     forView.putExtra("thisStudent",whichStudent);
                                     forView.putExtra("thisIsView", 101);
                                     startActivityForResult(forView,CODE_TO_VIEW_STUDENT);
 
-
-
                                 break;
+
                             //Send the intent if the User choses the EDIT option.
                             case editStudent:
                                     Intent forEdit = new Intent(MainActivity.this,
@@ -126,18 +120,21 @@ public class MainActivity extends AppCompatActivity  {
                                 deleteDialog.show();
 
                                 break;
+                                default:
+                                    Toast.makeText(MainActivity.this,
+                                            "Nothing Selected",
+                                            Toast.LENGTH_LONG).show();
 
                         }
                     }
                 });
-                //Create the alert dialog.
                 AlertDialog mAlert = builder.create();
-                //Show the alert.
                 mAlert.show();
             }
         });
 
     }
+    //Setter Method for postion of student thats clicked on the recyclerview.
     protected void setPositionStudent(int position){
         POSITION_STUDENT=position;
     }
@@ -148,18 +145,13 @@ public class MainActivity extends AppCompatActivity  {
     //Creates an intent that requests for Student Object from the CreateStudent Activity.
     public void addStudentButton (View view) {
 
-        Log.d("robss", "addStudentButton: started");
-
-
         Intent i = new Intent(this, CreateStudent.class);
+        //If there is any student in the list then send the rolls Id list.
         if(mStudentList.size()>0) {
             currentRollList=makeRollIdsList(mStudentList);
             i.putExtra("rollsList", currentRollList);
-            Log.d("yyyyyy", "addStudentButton: listcaughtin1"+currentRollList.get(0));
         }
-        //startActivityForResult(i,REQUEST_CODE_MAKE_STUDENT);
         startActivityForResult(i,CODE_TO_ADD_STUDENT);
-        Log.d("robss", "addStudentButton: started2");
     }
 
     //Gets the intent that can have both the added student and the updated student. We will have
@@ -168,26 +160,29 @@ public class MainActivity extends AppCompatActivity  {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(resultCode==RESULT_OK) {
             StudentTemplate studentManipulate;
-            Log.d("robss", "addStudentButton: started3");
-
 
             //Check to see if the Student returned is to be updated.
             if(requestCode==CODE_TO_VIEW_STUDENT||requestCode==CODE_TO_EDIT_STUDENT) {
+
                 int pos=getPositionStudent();
+                assert data != null;
                 studentManipulate=data.getParcelableExtra("updatedStudent");
                 mStudentList.get(pos).setStudentTemplateName(studentManipulate.getStudentTemplateName());
                 mStudentList.get(pos).setStudentTemplateStandard(studentManipulate.getStudentTemplateStandard());
                 mStudentList.get(pos).setStudentTemplateRoll(studentManipulate.getStudentTemplateRoll());
                 mStudentList.get(pos).setStudentTemplateAge(studentManipulate.getStudentTemplateAge());
                 adapter.notifyDataSetChanged();
-                Log.d("studddd", "onActivityResult: "+mStudentList.get(pos));
+
             }
+
             //Check to see if the Student got is to be added as new.
             if(requestCode==CODE_TO_ADD_STUDENT) {
-                Log.d("tttty", "onActivityResult: 11");
-                studentManipulate=(StudentTemplate) data.getParcelableExtra("addedStudent");
+
+                assert data != null;
+                studentManipulate = data.getParcelableExtra("addedStudent");
                 mStudentList.add(studentManipulate);
                 adapter.notifyDataSetChanged();
+
             }
         }
     }

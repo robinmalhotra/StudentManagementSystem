@@ -30,7 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Student"
+        android:textColor="@color/cardview_light_background"
         android:onClick="addStudentButton"
+        android:background="@color/colorPrimaryDark"
 
         />
 

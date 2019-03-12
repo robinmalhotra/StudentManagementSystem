@@ -52,8 +52,8 @@ public class StudentTemplate implements Parcelable {
     public String getStudentTemplateAge() {
         return studentTemplateAge;
     }
-    //Setter Methods.
 
+    //Setter Methods.
     public void setStudentTemplateName(String studentTemplateName) {
         this.studentTemplateName = studentTemplateName;
     }
