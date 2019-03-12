@@ -157,6 +157,7 @@ public class CreateStudent extends AppCompatActivity {
         String getStudentRoll = rollInput.getText().toString();
         int intRoll = Integer.parseInt(getStudentRoll);
         String getStudentAge = ageInput.getText().toString();
+
         boolean rollmatch=false;
 
         //Changes the boolean rollmatch to true and true means we would check for the validation.
