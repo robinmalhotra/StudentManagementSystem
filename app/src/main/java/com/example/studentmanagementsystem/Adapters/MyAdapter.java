@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.studentmanagementsystem.R;
-import com.example.studentmanagementsystem.StudentClass.StudentTemplate;
+import com.example.studentmanagementsystem.Model.StudentTemplate;
 
 import java.util.ArrayList;
 

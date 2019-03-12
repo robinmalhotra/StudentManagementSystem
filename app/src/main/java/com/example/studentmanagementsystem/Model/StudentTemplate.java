@@ -1,4 +1,4 @@
-package com.example.studentmanagementsystem.StudentClass;
+package com.example.studentmanagementsystem.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.studentmanagementsystem.R;
-import com.example.studentmanagementsystem.StudentClass.StudentTemplate;
+import com.example.studentmanagementsystem.Model.StudentTemplate;
 import java.util.ArrayList;
 
 
