@@ -55,12 +55,10 @@ public class StudentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final int[] numberOfStudentDeleted = new int[1];
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         studentHelperDatabase = new StudentHelperDatabase(this);
-
-
+        studentHelperDatabase.getWritableDatabase();
 
         rvStudentList = findViewById(R.id.rlRecycler_list);
         rvStudentList.setHasFixedSize(true);
@@ -73,12 +71,23 @@ public class StudentActivity extends AppCompatActivity {
         rvStudentList.setAdapter(adapter);
 
         //Adapter has a listener interface implemented.
+        handleDialog(adapter);
+
+        if(mStudentList.size()<1) {
+            mStudentList.addAll(studentHelperDatabase.refreshStudentListfromDb());
+            Log.d("yyyyyy", "onCreate: " + mStudentList);
+
+        }
+
+    }
+
+    protected void handleDialog(final StudentAdapter adapter) {
         adapter.setOnItemClickListener(new StudentAdapter.onItemClickListener() {
             @Override
             public void onItemClick(final int position) {//interface to implement onClick.
 
                 //Set the position based on the Viewholder selected by the listener.
-                //setPositionStudent(position);
+                setPositionStudent(position);
 
                 final String[] items = {"View", "Edit", "Delete"};
                 final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
@@ -123,8 +132,11 @@ public class StudentActivity extends AppCompatActivity {
                                 deleteDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        Log.d("yyyyyy", "onClick: " + position);
+
+                                        Log.d("yyyyyy", "onClick: deleted student: " + mStudentList.get(position).getStudentTemplateRoll());
+                                        studentHelperDatabase.deleteStudentInDb(mStudentList.get(position));
                                         mStudentList.remove(position);
-                                        studentHelperDatabase.deleteStudentinDb(mStudentList.get(position).getStudentTemplateRoll());
                                         adapter.notifyDataSetChanged();
                                     }
                                 });
@@ -135,50 +147,38 @@ public class StudentActivity extends AppCompatActivity {
                                     }
                                 });
                                 deleteDialog.show();
-
                                 break;
-                            default:
-                                Toast.makeText(StudentActivity.this,
-                                        "Nothing Selected",
-                                        Toast.LENGTH_LONG).show();
-
                         }
+
                     }
                 });
                 AlertDialog mAlert = builder.create();
                 mAlert.show();
             }
         });
-
-
-        mStudentList=studentHelperDatabase.refreshStudentListfromDb(mStudentList);
-
-        //Log.d("yyyyyy", "onCreate: " + studentHelperDatabase.databaseToString());
-
     }
 
 
     //Setter Method for postion of student thats clicked on the recyclerview.
-//    protected void setPositionStudent(int position) {
-//        POSITION_STUDENT = position;
-//    }
+    protected void setPositionStudent(int position) {
+        POSITION_STUDENT = position;
+    }
 
-//    protected int getPositionStudent() {
-//        return this.POSITION_STUDENT;
-//    }
+    protected int getPositionStudent() {
+        return this.POSITION_STUDENT;
+    }
 
     //Creates an intent that requests for Student Object from the CreateStudentActivity Activity.
     public void addStudentButton(View view) {
 
-        //ArrayList<Integer> currentRollList;
+        ArrayList<Integer> currentRollList;
         Intent i = new Intent(this, CreateStudentActivity.class);
         //If there is any student in the list then send the rolls Id list.
-//        if(mStudentList.size()>0) {
-//            currentRollList=makeRollIdsList(mStudentList);
-//            i.putExtra("rollsList", currentRollList);
-//        }
-//        startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
-        startActivityForResult(i,Constants.CODE_TO_ADD_STUDENT);
+        if(mStudentList.size()>0) {
+            currentRollList=makeRollIdsList(mStudentList);
+            i.putExtra("rollsList", currentRollList);
+        }
+        startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
     }
 
 
@@ -186,42 +186,35 @@ public class StudentActivity extends AppCompatActivity {
     //a check inside to see which is which.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK) {
+        if(resultCode==RESULT_OK) {
             StudentTemplate studentManipulate;
-            StudentHelperDatabase studentHelperDatabase = new StudentHelperDatabase(this);
-//
-//            //Check to see if the Student returned is to be updated.
-//            if (requestCode == Constants.CODE_TO_VIEW_STUDENT || requestCode == Constants.CODE_TO_EDIT_STUDENT) {
-//
-//                int pos = getPositionStudent();
-//                assert data != null;
-//                studentManipulate = data.getParcelableExtra("updatedStudent");
-//                mStudentList.get(pos).setStudentTemplateName(studentManipulate.getStudentTemplateName());
-//                mStudentList.get(pos).setStudentTemplateStandard(studentManipulate.getStudentTemplateStandard());
-//                mStudentList.get(pos).setStudentTemplateRoll(studentManipulate.getStudentTemplateRoll());
-//                mStudentList.get(pos).setStudentTemplateAge(studentManipulate.getStudentTemplateAge());
-//                adapter.notifyDataSetChanged();
-//
-//            }
-//
-//            //Check to see if the Student got is to be added as new.
-           if (requestCode == Constants.CODE_TO_ADD_STUDENT) {
-//
+
+            //Check to see if the Student returned is to be updated.
+            if(requestCode==Constants.CODE_TO_VIEW_STUDENT||requestCode==Constants.CODE_TO_EDIT_STUDENT) {
+
+                int pos=getPositionStudent();
                 assert data != null;
-                String checkRollinDb = data.getStringExtra("studentRoll");
-               StudentTemplate studentToAddInList = studentHelperDatabase.StudentAvailable(checkRollinDb);
-               mStudentList.add(studentToAddInList);
-               adapter.notifyDataSetChanged();
-               Log.d("yyyyyy", "onActivityResult: " + checkRollinDb);
-                //studentManipulate = studentHelperDatabase.getStudentFromDb(checkRollinDb);
-                //studentManipulate = data.getParcelableExtra("addedStudent");
+                studentManipulate=data.getParcelableExtra("updatedStudent");
+                mStudentList.get(pos).setStudentTemplateName(studentManipulate.getStudentTemplateName());
+                mStudentList.get(pos).setStudentTemplateStandard(studentManipulate.getStudentTemplateStandard());
+                mStudentList.get(pos).setStudentTemplateRoll(studentManipulate.getStudentTemplateRoll());
+                mStudentList.get(pos).setStudentTemplateAge(studentManipulate.getStudentTemplateAge());
+                adapter.notifyDataSetChanged();
 
+            }
 
+            //Check to see if the Student got is to be added as new.
+            if(requestCode==Constants.CODE_TO_ADD_STUDENT) {
 
-//
+                assert data != null;
+                studentManipulate = data.getParcelableExtra("addedStudent");
+                mStudentList.add(studentManipulate);
+                adapter.notifyDataSetChanged();
+
             }
         }
     }
+
 
 
     //Create the options for the Menu.
@@ -271,6 +264,19 @@ public class StudentActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+    //Creates a Roll Ids list out from the student list to make the Parcelable object light.
+    //@returns: String Array containing the List of Roll Numbers
+    //@params: ArrayList of Students;
+    public ArrayList<Integer> makeRollIdsList(ArrayList<StudentTemplate> listForRolls) {
+
+        int listSize= listForRolls.size();
+        ArrayList<Integer> rollsList=new ArrayList<Integer>();
+        for(int thisStudentRoll=0;thisStudentRoll<listSize;thisStudentRoll++) {
+            rollsList.add(Integer.parseInt(listForRolls.
+                    get(thisStudentRoll).getStudentTemplateRoll()));
+        }
+        return rollsList;
     }
 
 }

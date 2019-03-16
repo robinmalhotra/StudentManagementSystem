@@ -83,14 +83,21 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
     }
 
 
-    public void deleteStudentinDb (String studentRollId) throws SQLiteException {
+    public void deleteStudentInDb (StudentTemplate studentTemplate) throws SQLiteException {
 
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        //    db.delete(STUDENT_TABLE, COL_1_STUDENT_ROLL + "=?", new String[]{studentRollId});
-            db.execSQL("DELETE FROM " + STUDENT_TABLE + " WHERE " + COL_1_STUDENT_ROLL + "=\"" + studentRollId + "\";");
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(STUDENT_TABLE, COL_1_STUDENT_ROLL + "=?", new String[]{studentTemplate.getStudentTemplateRoll()});
             db.close();
-        }
+
+    }
+
+
+
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//            //db.delete(STUDENT_TABLE, COL_1_STUDENT_ROLL + "=?", new String[]{String.valueOf(studentRollId)});
+//            db.execSQL("DELETE FROM " + STUDENT_TABLE + " WHERE " + COL_1_STUDENT_ROLL + "=\"" + studentRollId + "\";");
+//            db.close();
 
 
     public boolean updateStudentInDb (StudentTemplate studentToUpdate) throws SQLiteException {
@@ -123,10 +130,10 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<StudentTemplate> refreshStudentListfromDb(ArrayList<StudentTemplate> listToInflate) {
-        boolean exists = false;
+    public ArrayList<StudentTemplate> refreshStudentListfromDb() {
+        ArrayList<StudentTemplate> listToInflate= new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + STUDENT_TABLE + " ;";
+        String query = "SELECT * FROM " + STUDENT_TABLE+ ";";
 
         Cursor cursor = db.rawQuery(query,null);
 
@@ -135,34 +142,32 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
         String studentStandard = new String();
         String studentAge = new String();
 
-        while(cursor.moveToNext()){
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
 
                 Log.d("yyyyyy", "getStudentListFromDb: before while");
                 studentRoll = cursor.getString(cursor.getColumnIndex(COL_1_STUDENT_ROLL));
                 studentName = cursor.getString(cursor.getColumnIndex(COL_2_STUDENT_NAME));
                 studentStandard = cursor.getString(  cursor.getColumnIndex(COL_3_STUDENT_STANDARD));
                 studentAge = cursor.getString(cursor.getColumnIndex(COL_4_STUDENT_AGE));
+            Log.d("yyyyyy", "getStudentListFromDb: in while:  " + studentName);
                 StudentTemplate studentToShow = new StudentTemplate(
                         studentName,
                         studentRoll,
                         studentStandard,
                         studentAge);
-//                for(StudentTemplate studentTemplate:listToInflate) {
-//                    if(!studentTemplate.getStudentTemplateRoll().equals(studentToShow.getStudentTemplateRoll())) {
-                      listToInflate.add(studentToShow);
-//                    }
-//                }
 
+                      listToInflate.add(studentToShow);
         }
         cursor.close();
         db.close();
         Log.d("yyyyyy", "getStudentFromDb: studentlistreturned");
         return listToInflate;
+
     }
     public StudentTemplate StudentAvailable(String thisRollId) throws SQLiteException {
+        Log.d("yyyyyy", "StudentAvailable: "+ thisRollId);
         SQLiteDatabase db = this.getReadableDatabase();
         StudentTemplate studentToAdd = new StudentTemplate();
-        boolean exists = false;
         String query = "SELECT * FROM " + STUDENT_TABLE + " WHERE "
                 + COL_1_STUDENT_ROLL + " = '" + String.valueOf(thisRollId) + "'";
 

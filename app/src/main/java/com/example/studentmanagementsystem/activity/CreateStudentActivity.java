@@ -212,7 +212,7 @@ public class CreateStudentActivity extends AppCompatActivity {
         else {
 
             Intent checkIntent = getIntent();
-            Intent returnStudentRoll = new Intent();
+            Intent returnStudentIntent = new Intent();
 
 
             if (checkIntent.hasExtra("thisIsView") || checkIntent.hasExtra("thisIsEdit")) {
@@ -224,13 +224,13 @@ public class CreateStudentActivity extends AppCompatActivity {
                 studentToUpdate.setStudentTemplateStandard(stringOfStudentStandard);
                 studentToUpdate.setStudentTemplateAge(stringOfStudentAge);
 
-                boolean studentAdded;
-                studentAdded = studentHelperDatabase.updateStudentInDb(studentToUpdate);
+                studentHelperDatabase.getWritableDatabase();
+                studentHelperDatabase.updateStudentInDb(studentToUpdate);
 
-                //returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
-                //setResult(RESULT_OK, returnStudentIntent);
+                returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
+                setResult(RESULT_OK, returnStudentIntent);
 
-                if(studentAdded)
+
                 Toast.makeText(CreateStudentActivity.this, "Student added in DB", Toast.LENGTH_LONG).show();
                 finish();
 
@@ -242,14 +242,13 @@ public class CreateStudentActivity extends AppCompatActivity {
                 StudentTemplate studentToAdd = new StudentTemplate(stringOfStudentName,
                         stringOfStudentRoll, stringOfStudentStandard,
                         stringOfStudentAge);
-
+                studentHelperDatabase.getWritableDatabase();
                 studentHelperDatabase.addStudentinDb(studentToAdd);
                 Log.d("yyyyyy", "addStudentButton: student adds");
-                returnStudentRoll.putExtra("studentRoll",stringOfStudentRoll);
 
-                //returnStudentIntent.putExtra("addedStudent", studentToAdd);
-                setResult(RESULT_OK, returnStudentRoll);
-                //Toast.makeText(CreateStudentActivity.this, "Student Added", Toast.LENGTH_LONG).show();
+                returnStudentIntent.putExtra("addedStudent", studentToAdd);
+                setResult(RESULT_OK, returnStudentIntent);
+                Toast.makeText(CreateStudentActivity.this, "Student Added", Toast.LENGTH_LONG).show();
                 finish();
             }
         }

@@ -3,6 +3,8 @@ package com.example.studentmanagementsystem.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 public class StudentTemplate implements Parcelable {
 
     private String studentTemplateName;
