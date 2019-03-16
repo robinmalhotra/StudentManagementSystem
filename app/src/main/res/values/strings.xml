@@ -9,4 +9,6 @@
     <string name="agehint">Age</string>
     <string name="save_student_button">Save Student</string>
     <string name="update_student_button">Update Student</string>
+    <string name="update_student">Update Student</string>
+    <string name="add_student_button">Add Student</string>
 </resources>

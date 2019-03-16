@@ -1,4 +1,4 @@
-package com.example.studentmanagementsystem.Model;
+package com.example.studentmanagementsystem.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,6 +9,9 @@ public class StudentTemplate implements Parcelable {
     private String studentTemplateRoll;
     private String studentTemplateStandard;
     private String studentTemplateAge;
+
+    //Empty Constructor.
+    public StudentTemplate() {}
 
     public StudentTemplate(String studentTemplateName, String studentTemplateRoll, String studentTemplateStandard, String studentTemplateAge) {
         this.studentTemplateName = studentTemplateName;

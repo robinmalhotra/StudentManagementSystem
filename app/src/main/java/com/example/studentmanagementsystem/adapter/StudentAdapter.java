@@ -1,4 +1,4 @@
-package com.example.studentmanagementsystem.Adapters;
+package com.example.studentmanagementsystem.adapter;
 
 
 import android.support.annotation.NonNull;
@@ -8,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.studentmanagementsystem.R;
-import com.example.studentmanagementsystem.Model.StudentTemplate;
+import com.example.studentmanagementsystem.model.StudentTemplate;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder> {
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     //variables of the adpater class.
     private ArrayList<StudentTemplate> studentList;
     private onItemClickListener mListener;
 
-    public MyAdapter(ArrayList<StudentTemplate> studentList) {
+    public StudentAdapter(ArrayList<StudentTemplate> studentList) {
         this.studentList = studentList;
     }
 
@@ -38,10 +38,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder>
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder studentViewHolder, int i) {
 
-        studentViewHolder.name.setText(studentList.get(i).getStudentTemplateName());
-        studentViewHolder.standard.setText(studentList.get(i).getStudentTemplateStandard());
-        studentViewHolder.roll.setText(studentList.get(i).getStudentTemplateRoll());
-        studentViewHolder.age.setText(studentList.get(i).getStudentTemplateAge());
+        studentViewHolder.tvName.setText(studentList.get(i).getStudentTemplateName());
+        studentViewHolder.tvStandard.setText(studentList.get(i).getStudentTemplateStandard());
+        studentViewHolder.tvRoll.setText(studentList.get(i).getStudentTemplateRoll());
+        studentViewHolder.tvAge.setText(studentList.get(i).getStudentTemplateAge());
 
     }
 
@@ -53,16 +53,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.StudentViewHolder>
     //Inner class that handles the View of the recycler view.
     public class StudentViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name,standard,roll,age;
+        TextView tvName, tvStandard, tvRoll, tvAge;
         //Constructor
         public StudentViewHolder(@NonNull View itemView, final onItemClickListener listener) {
 
             super(itemView);
 
-            name =  itemView.findViewById(R.id.tvNameEmpty);
-            standard = itemView.findViewById(R.id.tvStandardEmpty);
-            roll = itemView.findViewById(R.id.tvRollEmpty);
-            age = itemView.findViewById(R.id.tvAgeEmpty);
+            tvName =  itemView.findViewById(R.id.tvNameEmpty);
+            tvStandard = itemView.findViewById(R.id.tvStandardEmpty);
+            tvRoll = itemView.findViewById(R.id.tvRollEmpty);
+            tvAge = itemView.findViewById(R.id.tvAgeEmpty);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
