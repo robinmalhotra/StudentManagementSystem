@@ -19,4 +19,15 @@
     <string name="add_student_operation">addIt</string>
     <string name="student_for_db">studentForDb</string>
     <string name="operation_on_student">operationOnStudent</string>
+    <string name="want_to_delete_or_not">Do you really want to delete this Student?</string>
+    <string name="deletetitle">Delete Student</string>
+    <string name="deleteconfirm">Delete</string>
+    <string name="deletecancel">cancel</string>
+    <string name="sortbyname">Sorted By Name</string>
+    <string name="sortbyroll">Sorted By Roll No.</string>
+    <string name="namecantbeempty">Name cannot be Empty</string>
+    <string name="enteralphabetsonly">Enter Alphabets only</string>
+    <string name="valid_roll_error">Valid Roll Number between 1 - 100</string>
+    <string name="rolliderror">Roll Id already exists</string>
+    <string name="ageerror">Age should be between 7 - 18</string>
 </resources>

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class CreateStudentActivity extends AppCompatActivity {
     private Intent holdIntent;
-    private static final int ROLL_MAX = 100;
+    private static final int ROLL_MAX = 1000;
     private StudentHelperDatabase studentHelperDatabase;
     private String oldIdOfStudent;
 
@@ -46,7 +46,6 @@ public class CreateStudentActivity extends AppCompatActivity {
         studentHelperDatabase = new StudentHelperDatabase(this);
 
         StudentTemplate catchStudent = holdIntent.getParcelableExtra("thisStudent");
-
 
 
         //Link the EditText fields.
@@ -142,8 +141,9 @@ public class CreateStudentActivity extends AppCompatActivity {
         EditText ageInput = findViewById(R.id.etStudentAgeText);
         ageInput.setEnabled(true);
 
-        StudentTemplate studentTemplate = getIntent().getParcelableExtra("thisStudent");
-        setOldIdOfStudent(studentTemplate.getStudentTemplateRoll());
+        StudentTemplate holdStudent = getIntent().getParcelableExtra("thisStudent");
+
+        setOldIdOfStudent(holdStudent.getStudentTemplateRoll());
 
         Button changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
@@ -204,22 +204,22 @@ public class CreateStudentActivity extends AppCompatActivity {
         //If Name has no length then show error and request focus.
         if (stringOfStudentName.length() == 0) {
             etNameInput.requestFocus();
-            etNameInput.setError("Name cannot be Empty");
+            etNameInput.setError(getString(R.string.namecantbeempty));
         }
         //if Name's range lies outside the Alphabetic Range, then show error and request focus.
         else if (!stringOfStudentName.matches("\\b[a-zA-Z]+\\s[a-zA-Z]+\\b")) {
             etNameInput.requestFocus();
-            etNameInput.setError("Enter Alphabets only");
+            etNameInput.setError(getString(R.string.enteralphabetsonly));
         }
         //Check to see if the Roll number is within Range.
         else if (intRoll < 1 || intRoll > ROLL_MAX) {
             etRollInput.requestFocus();
-            etRollInput.setError("Valid Roll Number between 1 - 100");
+            etRollInput.setError(getString(R.string.valid_roll_error));
         }
         //Check to see if the Roll Id already exists.
         else if(rollmatch) {
             etRollInput.requestFocus();
-            etRollInput.setError("Roll Id already exists");
+            etRollInput.setError(getString(R.string.rolliderror));
         }
         //Standard should be between 1 to 12.
         else if (!stringOfStudentStandard.matches("([1-9]|1[0-2])")) {
@@ -229,7 +229,7 @@ public class CreateStudentActivity extends AppCompatActivity {
         //Age should be between 7 to 18
         else if (!stringOfStudentAge.matches("([7-9]|1[0-8])")) {
             etAgeInput.requestFocus();
-            etAgeInput.setError("Age should be between 7 - 18");
+            etAgeInput.setError(getString(R.string.ageerror));
         }
 
         //if All the validations are passed, then add the student or update the student based
@@ -244,24 +244,18 @@ public class CreateStudentActivity extends AppCompatActivity {
 
                 StudentTemplate studentToUpdate = holdIntent.getParcelableExtra("thisStudent");
 
+                setOldIdOfStudent(studentToUpdate.getStudentTemplateRoll());
                 studentToUpdate.setStudentTemplateName(stringOfStudentName);
                 studentToUpdate.setStudentTemplateRoll(stringOfStudentRoll);
                 studentToUpdate.setStudentTemplateStandard(stringOfStudentStandard);
                 studentToUpdate.setStudentTemplateAge(stringOfStudentAge);
 
-                operationOnStudent="updateIt";//getString(R.string.update_student_operation);
+                operationOnStudent="updateIt";
 
-                generateDialog(studentToUpdate,operationOnStudent);
-                //studentHelperDatabase.getWritableDatabase();
-                //studentHelperDatabase.updateStudentInDb(studentToUpdate);
+                generateDialog(studentToUpdate,operationOnStudent,getOldIdOfStudent());
 
                 returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
-                returnStudentIntent.putExtra("oldIdOfStudent",getOldIdOfStudent());
                 setResult(RESULT_OK, returnStudentIntent);
-
-
-                //Toast.makeText(CreateStudentActivity.this, "Student added in DB", Toast.LENGTH_LONG).show();
-
 
             }
             else {
@@ -272,13 +266,9 @@ public class CreateStudentActivity extends AppCompatActivity {
                         stringOfStudentRoll, stringOfStudentStandard,
                         stringOfStudentAge);
 
-                operationOnStudent = "addIt";//getString(R.string.add_student_operation);
+                operationOnStudent = "addIt";
 
-                //studentHelperDatabase.getWritableDatabase();
-                //studentHelperDatabase.addStudentinDb(studentToAdd);
-
-                generateDialog(studentToAdd,operationOnStudent);
-                Log.d("yyyyyy", "addStudentButton: student adds");
+                generateDialog(studentToAdd,operationOnStudent,null);
 
                 returnStudentIntent.putExtra("addedStudent", studentToAdd);
                 setResult(RESULT_OK, returnStudentIntent);
@@ -288,9 +278,14 @@ public class CreateStudentActivity extends AppCompatActivity {
         }
     }
 
-
-    private void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
-
+/** Generates Dialog box when we press Add Button and choice is given how to interact with database
+ * Choice 1: via Service
+ * Choice 2: via Intent Service
+ * Choice 3: via AsyncTasks
+ * param@ studentToHandle: Student model object
+ * param@ operationOnStudent: To Add or Update the student.
+ */
+    private void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent, final String oldIdOfStudent) {
 
 
         final String[] items = {getString(R.string.alert_service),
@@ -310,35 +305,30 @@ public class CreateStudentActivity extends AppCompatActivity {
 
                 switch (which) {
                     case useService:
-                        //Send the intent if the User chooses the VIEW option.
                         Intent forService = new Intent(CreateStudentActivity.this,
                                 BackgroundService.class);
                         forService.putExtra("studentForDb", studentToHandle);
                         forService.putExtra("operation",operationOnStudent);
+                        forService.putExtra("oldIdOfStudent",oldIdOfStudent);
                         startService(forService);
-                        Log.d("yyyyyy", "generateDialog: "+ studentToHandle.getStudentTemplateName());
                         finish();
-
                         break;
 
-                    //Send the intent if the User choses the EDIT option.
                     case useIntentService:
                         Intent forIntentService = new Intent(CreateStudentActivity.this,
                                 BackgroundIntentService.class);
                         forIntentService.putExtra("studentForDb", studentToHandle);
                         forIntentService.putExtra("operation",operationOnStudent);
+                        forIntentService.putExtra("oldIdOfStudent",oldIdOfStudent);
                         startService(forIntentService);
                         finish();
-
                         break;
-                    //Delete the Student.
+
                     case useAsyncTasks:
+
                         BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(CreateStudentActivity.this);
-
-                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent);
-
+                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,oldIdOfStudent);
                         finish();
-                        //startService(forIntentService);
                         break;
                 }
 

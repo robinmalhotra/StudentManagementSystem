@@ -24,6 +24,7 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
         StudentTemplate studentForDb = (StudentTemplate) objects[0];
         String operationOnStudent = (String) objects[1];
+        String oldIdofStudent = (String) objects[2];
 
         StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
         switch (operationOnStudent){
@@ -36,7 +37,7 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
             case "updateIt":
 
                 db=dbHelper.getWritableDatabase();
-                dbHelper.updateStudentInDb(studentForDb);
+                dbHelper.updateStudentInDb(studentForDb,oldIdofStudent);
                 db.close();
                 break;
             case "deleteIt":

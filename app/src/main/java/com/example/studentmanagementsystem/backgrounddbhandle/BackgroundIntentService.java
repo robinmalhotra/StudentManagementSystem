@@ -26,25 +26,30 @@ public class BackgroundIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         StudentHelperDatabase databaseHelper = new StudentHelperDatabase(this);
         databaseHelper.getWritableDatabase();
+        String oldIdofStudent = new String();
 
+        if(intent.hasExtra("oldIdOfStudent")) {
+            oldIdofStudent = intent.getStringExtra("oldIdOfStudent");
+            Log.d("yyyyyy", "onStartCommand: " + oldIdofStudent);
+        }
         String operationOnStudent = intent.getStringExtra("operation");
 
         StudentTemplate studentForDb = intent.getParcelableExtra("studentForDb");
         Log.d("yyyyyy", "onStartCommand: of service" + studentForDb.getStudentTemplateRoll());
 
 
-        if(operationOnStudent.equals("addIt"))
-        {
-            databaseHelper.addStudentinDb(studentForDb);
+        switch (operationOnStudent) {
+            case "addIt":
+                databaseHelper.addStudentinDb(studentForDb);
 
-        }
-        else if(operationOnStudent.equals("updateIt"))
-        {
-            databaseHelper.updateStudentInDb(studentForDb);
-        }
-        else if(operationOnStudent.equals("deleteIt")) {
+                break;
+            case "updateIt":
+                databaseHelper.updateStudentInDb(studentForDb,oldIdofStudent);
+                break;
+            case "deleteIt":
 
-            databaseHelper.deleteStudentInDb(studentForDb);
+                databaseHelper.deleteStudentInDb(studentForDb);
+                break;
         }
 
 
