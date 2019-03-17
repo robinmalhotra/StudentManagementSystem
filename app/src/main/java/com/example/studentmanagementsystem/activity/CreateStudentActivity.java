@@ -289,7 +289,7 @@ public class CreateStudentActivity extends AppCompatActivity {
     }
 
 
-    protected void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
+    private void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
 
 
 
@@ -333,10 +333,10 @@ public class CreateStudentActivity extends AppCompatActivity {
                         break;
                     //Delete the Student.
                     case useAsyncTasks:
-                        Intent forAsyncTasks = new Intent(CreateStudentActivity.this,
-                                BackgroundAsyncTasks.class);
-                        forAsyncTasks.putExtra(getString(R.string.operation_on_student),operationOnStudent);
-                        forAsyncTasks.putExtra(getString(R.string.operation_on_student),operationOnStudent);
+                        BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(CreateStudentActivity.this);
+
+                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent);
+
                         finish();
                         //startService(forIntentService);
                         break;

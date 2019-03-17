@@ -34,14 +34,18 @@ public class BackgroundService extends Service {
         Log.d("yyyyyy", "onStartCommand: of service" + studentForDb.getStudentTemplateRoll());
 
 
-        if(operationOnStudent.equals("addIt"))
-        {
+        if(operationOnStudent.equals("addIt")) {
+
             databaseHelper.addStudentinDb(studentForDb);
 
         }
-        else if(operationOnStudent.equals("updateIt"))
-        {
+        else if(operationOnStudent.equals("updateIt")) {
+
             databaseHelper.updateStudentInDb(studentForDb);
+        }
+        else if(operationOnStudent.equals("deleteIt")) {
+
+            databaseHelper.deleteStudentInDb(studentForDb);
         }
 
         return START_NOT_STICKY;

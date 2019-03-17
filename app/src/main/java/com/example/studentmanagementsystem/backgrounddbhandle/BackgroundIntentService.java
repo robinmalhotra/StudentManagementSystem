@@ -42,6 +42,10 @@ public class BackgroundIntentService extends IntentService {
         {
             databaseHelper.updateStudentInDb(studentForDb);
         }
+        else if(operationOnStudent.equals("deleteIt")) {
+
+            databaseHelper.deleteStudentInDb(studentForDb);
+        }
 
 
     }

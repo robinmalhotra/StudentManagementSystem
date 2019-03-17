@@ -24,6 +24,9 @@ import android.widget.Toast;
 
 import com.example.studentmanagementsystem.adapter.StudentAdapter;
 import com.example.studentmanagementsystem.R;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
@@ -135,9 +138,11 @@ public class StudentActivity extends AppCompatActivity {
                                         Log.d("yyyyyy", "onClick: " + position);
 
                                         Log.d("yyyyyy", "onClick: deleted student: " + mStudentList.get(position).getStudentTemplateRoll());
-                                        studentHelperDatabase.deleteStudentInDb(mStudentList.get(position));
+                                        String operationOnStudent = "deleteIt";
+                                        generateDialog(mStudentList.get(position),operationOnStudent);
+                                        //studentHelperDatabase.deleteStudentInDb(mStudentList.get(position));
                                         mStudentList.remove(position);
-                                        adapter.notifyDataSetChanged();
+
                                     }
                                 });
                                 deleteDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
@@ -277,6 +282,65 @@ public class StudentActivity extends AppCompatActivity {
                     get(thisStudentRoll).getStudentTemplateRoll()));
         }
         return rollsList;
+    }
+
+    private void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
+
+
+
+        final String[] items = {getString(R.string.alert_service),
+                getString(R.string.alert_intentservice),
+                getString(R.string.alert_async)};
+        final int useService = 0, useIntentService = 1, useAsyncTasks = 2;
+
+        //Alert Dialog that has context of this activity.
+        AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
+        builder.setTitle(R.string.userchoice_dbhandle_alert);
+        //Sets the items of the Dialog.
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+                switch (which) {
+                    case useService:
+                        //Send the intent if the User chooses the VIEW option.
+                        Intent forService = new Intent(StudentActivity.this,
+                                BackgroundService.class);
+                        forService.putExtra("studentForDb", studentToHandle);
+                        forService.putExtra("operation",operationOnStudent);
+                        startService(forService);
+                        Log.d("yyyyyy", "generateDialog: "+ studentToHandle.getStudentTemplateName());
+
+                        break;
+
+                    //Send the intent if the User choses the EDIT option.
+                    case useIntentService:
+                        Intent forIntentService = new Intent(StudentActivity.this,
+                                BackgroundIntentService.class);
+                        forIntentService.putExtra("studentForDb", studentToHandle);
+                        forIntentService.putExtra("operation",operationOnStudent);
+                        startService(forIntentService);
+
+
+                        break;
+                    //Delete the Student.
+                    case useAsyncTasks:
+                        BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(StudentActivity.this);
+
+                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent);
+
+                        //startService(forIntentService);
+                        break;
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+        });
+        AlertDialog mAlert = builder.create();
+        mAlert.show();
+
     }
 
 }
