@@ -24,7 +24,7 @@
         android:text="@string/add_student_button"
         android:textColor="@color/cardview_light_background"
         android:onClick="addStudentButton"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
 
         />
 

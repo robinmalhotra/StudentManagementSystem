@@ -17,6 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".backgrounddbhandle.BackgroundService" />
+        <service android:name=".backgrounddbhandle.BackgroundIntentService" />
     </application>
 
 </manifest>

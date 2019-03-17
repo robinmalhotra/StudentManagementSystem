@@ -1,6 +1,8 @@
 package com.example.studentmanagementsystem.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.studentmanagementsystem.R;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
+import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
+import com.example.studentmanagementsystem.util.Constants;
+
 import java.util.ArrayList;
 
 
@@ -19,6 +27,15 @@ public class CreateStudentActivity extends AppCompatActivity {
     private Intent holdIntent;
     private static final int ROLL_MAX = 100;
     private StudentHelperDatabase studentHelperDatabase;
+    private String oldIdOfStudent;
+
+    public String getOldIdOfStudent() {
+        return oldIdOfStudent;
+    }
+
+    public void setOldIdOfStudent(String oldIdOfStudent) {
+        this.oldIdOfStudent = oldIdOfStudent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +46,9 @@ public class CreateStudentActivity extends AppCompatActivity {
         studentHelperDatabase = new StudentHelperDatabase(this);
 
         StudentTemplate catchStudent = holdIntent.getParcelableExtra("thisStudent");
+
+
+
         //Link the EditText fields.
         EditText nameInput = findViewById(R.id.etStudentNameText);
         EditText rollInput = findViewById(R.id.etStudentRollNumberText);
@@ -122,6 +142,9 @@ public class CreateStudentActivity extends AppCompatActivity {
         EditText ageInput = findViewById(R.id.etStudentAgeText);
         ageInput.setEnabled(true);
 
+        StudentTemplate studentTemplate = getIntent().getParcelableExtra("thisStudent");
+        setOldIdOfStudent(studentTemplate.getStudentTemplateRoll());
+
         Button changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
         Button updateButton = findViewById(R.id.btnUpdateStudent);
@@ -146,6 +169,8 @@ public class CreateStudentActivity extends AppCompatActivity {
         EditText etRollInput;
         EditText etStandardInput;
         EditText etAgeInput;
+        String operationOnStudent;
+
 
         //Connect the Edit Fields to the EditText refrences and set it Enabled.
         etNameInput = findViewById(R.id.etStudentNameText);
@@ -191,7 +216,7 @@ public class CreateStudentActivity extends AppCompatActivity {
             etRollInput.requestFocus();
             etRollInput.setError("Valid Roll Number between 1 - 100");
         }
-       //Check to see if the Roll Id already exists.
+        //Check to see if the Roll Id already exists.
         else if(rollmatch) {
             etRollInput.requestFocus();
             etRollInput.setError("Roll Id already exists");
@@ -224,15 +249,19 @@ public class CreateStudentActivity extends AppCompatActivity {
                 studentToUpdate.setStudentTemplateStandard(stringOfStudentStandard);
                 studentToUpdate.setStudentTemplateAge(stringOfStudentAge);
 
-                studentHelperDatabase.getWritableDatabase();
-                studentHelperDatabase.updateStudentInDb(studentToUpdate);
+                operationOnStudent="updateIt";//getString(R.string.update_student_operation);
+
+                generateDialog(studentToUpdate,operationOnStudent);
+                //studentHelperDatabase.getWritableDatabase();
+                //studentHelperDatabase.updateStudentInDb(studentToUpdate);
 
                 returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
+                returnStudentIntent.putExtra("oldIdOfStudent",getOldIdOfStudent());
                 setResult(RESULT_OK, returnStudentIntent);
 
 
-                Toast.makeText(CreateStudentActivity.this, "Student added in DB", Toast.LENGTH_LONG).show();
-                finish();
+                //Toast.makeText(CreateStudentActivity.this, "Student added in DB", Toast.LENGTH_LONG).show();
+
 
             }
             else {
@@ -242,15 +271,84 @@ public class CreateStudentActivity extends AppCompatActivity {
                 StudentTemplate studentToAdd = new StudentTemplate(stringOfStudentName,
                         stringOfStudentRoll, stringOfStudentStandard,
                         stringOfStudentAge);
-                studentHelperDatabase.getWritableDatabase();
-                studentHelperDatabase.addStudentinDb(studentToAdd);
+
+                operationOnStudent = "addIt";//getString(R.string.add_student_operation);
+
+                //studentHelperDatabase.getWritableDatabase();
+                //studentHelperDatabase.addStudentinDb(studentToAdd);
+
+                generateDialog(studentToAdd,operationOnStudent);
                 Log.d("yyyyyy", "addStudentButton: student adds");
 
                 returnStudentIntent.putExtra("addedStudent", studentToAdd);
                 setResult(RESULT_OK, returnStudentIntent);
                 Toast.makeText(CreateStudentActivity.this, "Student Added", Toast.LENGTH_LONG).show();
-                finish();
+
             }
         }
     }
+
+
+    protected void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
+
+
+
+        final String[] items = {getString(R.string.alert_service),
+                getString(R.string.alert_intentservice),
+                getString(R.string.alert_async)};
+        final int useService = 0, useIntentService = 1, useAsyncTasks = 2;
+
+        //Alert Dialog that has context of this activity.
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateStudentActivity.this);
+        builder.setTitle(R.string.userchoice_dbhandle_alert);
+        //Sets the items of the Dialog.
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+                switch (which) {
+                    case useService:
+                        //Send the intent if the User chooses the VIEW option.
+                        Intent forService = new Intent(CreateStudentActivity.this,
+                                BackgroundService.class);
+                        forService.putExtra("studentForDb", studentToHandle);
+                        forService.putExtra("operation",operationOnStudent);
+                        startService(forService);
+                        Log.d("yyyyyy", "generateDialog: "+ studentToHandle.getStudentTemplateName());
+                        finish();
+
+                        break;
+
+                    //Send the intent if the User choses the EDIT option.
+                    case useIntentService:
+                        Intent forIntentService = new Intent(CreateStudentActivity.this,
+                                BackgroundIntentService.class);
+                        forIntentService.putExtra("studentForDb", studentToHandle);
+                        forIntentService.putExtra("operation",operationOnStudent);
+                        startService(forIntentService);
+                        finish();
+
+                        break;
+                    //Delete the Student.
+                    case useAsyncTasks:
+                        Intent forAsyncTasks = new Intent(CreateStudentActivity.this,
+                                BackgroundAsyncTasks.class);
+                        forAsyncTasks.putExtra(getString(R.string.operation_on_student),operationOnStudent);
+                        forAsyncTasks.putExtra(getString(R.string.operation_on_student),operationOnStudent);
+                        finish();
+                        //startService(forIntentService);
+                        break;
+                }
+
+            }
+        });
+        AlertDialog mAlert = builder.create();
+        mAlert.show();
+
+    }
+
 }
+
+

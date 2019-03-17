@@ -11,4 +11,12 @@
     <string name="update_student_button">Update Student</string>
     <string name="update_student">Update Student</string>
     <string name="add_student_button">Add Student</string>
+    <string name="userchoice_dbhandle_alert">How do you want the Database to be handled?</string>
+    <string name="alert_service">Service</string>
+    <string name="alert_intentservice">Intent Service</string>
+    <string name="alert_async">Asynctasks</string>
+    <string name="update_student_operation">updateIt</string>
+    <string name="add_student_operation">addIt</string>
+    <string name="student_for_db">studentForDb</string>
+    <string name="operation_on_student">operationOnStudent</string>
 </resources>

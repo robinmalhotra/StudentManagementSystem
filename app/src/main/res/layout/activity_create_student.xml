@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/namehint"
-        android:inputType="textCapSentences"
+        android:inputType="textPersonName"
         android:textColor="@color/cardview_light_background" />
 
     <EditText
