@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.studentmanagementsystem">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/iconcustom"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/iconcustom"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.CreateStudentActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.CreateStudentActivity" />
         <activity android:name=".activity.StudentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +23,11 @@
 
         <service android:name=".backgrounddbhandle.BackgroundService" />
         <service android:name=".backgrounddbhandle.BackgroundIntentService" />
+        <receiver android:name=".broadcastreceiver.StudentBroadcastReceiver" >
+
+        </receiver>
+
+
     </application>
 
 </manifest>

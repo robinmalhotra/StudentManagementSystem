@@ -7,8 +7,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.os.Vibrator;
 import android.widget.Toast;
+
 
 import com.example.studentmanagementsystem.model.StudentTemplate;
 
@@ -32,6 +33,8 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
         super(context, STUDENT_DB, null, DATABASE_VERSION);
     }
+
+
 
 
     @Override
@@ -70,6 +73,10 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
         values.put(COL_3_STUDENT_STANDARD, student.getStudentTemplateStandard());
         values.put(COL_4_STUDENT_AGE, student.getStudentTemplateAge());
         db.insert(STUDENT_TABLE, null, values);
+
+
+
+
         db.close();
     }
 

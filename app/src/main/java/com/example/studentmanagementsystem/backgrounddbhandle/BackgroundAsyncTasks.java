@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Vibrator;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
@@ -16,6 +17,8 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
     public BackgroundAsyncTasks(Context context) {
         this.context=context;
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(100);
     }
 
 

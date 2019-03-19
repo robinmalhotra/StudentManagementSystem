@@ -30,4 +30,8 @@
     <string name="valid_roll_error">Valid Roll Number between 1 - 100</string>
     <string name="rolliderror">Roll Id already exists</string>
     <string name="ageerror">Age should be between 7 - 18</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

@@ -1,11 +1,15 @@
 package com.example.studentmanagementsystem.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +32,27 @@ public class CreateStudentActivity extends AppCompatActivity {
     private static final int ROLL_MAX = 1000;
     private StudentHelperDatabase studentHelperDatabase;
     private String oldIdOfStudent;
+    private Context context;
+
+    StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter intentFilter = new IntentFilter(Constants.FILTER_ACTION_KEY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(studentBroadcastReceiver,intentFilter);
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(studentBroadcastReceiver);
+
+    }
+
 
     public String getOldIdOfStudent() {
         return oldIdOfStudent;
@@ -253,7 +278,6 @@ public class CreateStudentActivity extends AppCompatActivity {
                 operationOnStudent="updateIt";
 
                 generateDialog(studentToUpdate,operationOnStudent,getOldIdOfStudent());
-
                 returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
                 setResult(RESULT_OK, returnStudentIntent);
 
@@ -311,7 +335,7 @@ public class CreateStudentActivity extends AppCompatActivity {
                         forService.putExtra("operation",operationOnStudent);
                         forService.putExtra("oldIdOfStudent",oldIdOfStudent);
                         startService(forService);
-                        finish();
+                        //finish();
                         break;
 
                     case useIntentService:
@@ -321,7 +345,7 @@ public class CreateStudentActivity extends AppCompatActivity {
                         forIntentService.putExtra("operation",operationOnStudent);
                         forIntentService.putExtra("oldIdOfStudent",oldIdOfStudent);
                         startService(forIntentService);
-                        finish();
+                        //finish();
                         break;
 
                     case useAsyncTasks:
@@ -338,6 +362,23 @@ public class CreateStudentActivity extends AppCompatActivity {
         mAlert.show();
 
     }
+
+    /**Inner broadcast receiver that receives the broadcast if the services have indeed added the elements
+     * in the database.
+     */
+    public class StudentBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            finish();
+
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(500);
+            Toast.makeText(CreateStudentActivity.this,"Broadcast Received",Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
 
 }
 
