@@ -1,32 +1,30 @@
-package com.example.studentmanagementsystem.activity;
+package com.example.studentmanagementsystem.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabItem;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.TableLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.example.studentmanagementsystem.adapter.StudentAdapter;
 import com.example.studentmanagementsystem.R;
-import com.example.studentmanagementsystem.adapter.StudentFragmentAdapter;
+import com.example.studentmanagementsystem.activity.CreateStudentActivity;
+import com.example.studentmanagementsystem.activity.StudentActivity;
+import com.example.studentmanagementsystem.adapter.StudentAdapter;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
@@ -39,93 +37,96 @@ import com.example.studentmanagementsystem.util.SortByRoll;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static android.app.Activity.RESULT_OK;
 
-public class StudentActivity extends AppCompatActivity {
+public class StudentListFragment extends Fragment {
 
-
-    private ViewPager viewPager;
-    private StudentFragmentAdapter fragmentAdapter;
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private TabItem tabStudentList;
-    private TabItem tabAddStudent;
-
-
+    private LayoutInflater inflater;
+    private ViewGroup container;
+    private Bundle savedInstanceState;
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
     private RecyclerView rvStudentList;
     private StudentAdapter adapter;
     private int POSITION_STUDENT;
+    private StudentHelperDatabase studentHelperDatabase;
+    private Button addButton;
+    private FragmentListListener listListener;
 
+    public interface FragmentListListener {
+        void inputListSent(CharSequence input);
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.app_name));
-
-        tabLayout = findViewById(R.id.tablayout);
-        tabStudentList = findViewById(R.id.tab_student_list);
-        tabAddStudent = findViewById(R.id.tab_add_student);
-
-        viewPager = findViewById(R.id.view_pager);
-        fragmentAdapter = new StudentFragmentAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
-        viewPager.setAdapter(fragmentAdapter);
-
-        tabLayout.setOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-
-
-                if (tab.getPosition() == 1) {
-                    toolbar.setBackgroundColor(ContextCompat.getColor(StudentActivity.this,
-                            R.color.colorAccent));
-                }
-                 else {
-                    toolbar.setBackgroundColor(ContextCompat.getColor(StudentActivity.this,
-                            R.color.colorPrimary));
-                }
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-
-        StudentHelperDatabase studentHelperDatabase = new StudentHelperDatabase(this);
-        studentHelperDatabase.getWritableDatabase();
-
-        rvStudentList = findViewById(R.id.rlRecycler_list);
+        View view = inflater.inflate(R.layout.fragment_student_list,container,false);
+        rvStudentList = view.findViewById(R.id.rlRecycler_list);
         rvStudentList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this);
+                new LinearLayoutManager(getContext());
 
         //Set the Layout of Recyclerview to be linear. Default: Vertical.
         rvStudentList.setLayoutManager(linearLayoutManager);
         adapter = new StudentAdapter(this.mStudentList);
         rvStudentList.setAdapter(adapter);
+        addButton = view.findViewById(R.id.btnAdd_student);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                ArrayList<Integer> currentRollList;
+                Intent i = new Intent(this, CreateStudentActivity.class);
+                //If there is any student in the list then send the rolls Id list.
+                if(mStudentList.size()>0) {
+                    currentRollList=makeRollIdsList(mStudentList);
+                    i.putExtra("rollsList", currentRollList);
+                }
+                startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
+
+            }
+        });
+
+
+
+        return view;
+    }
+
+    int position;
+
+    public static Fragment getInstance(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("pos", position);
+        StudentListFragment tabFragment = new StudentListFragment();
+        tabFragment.setArguments(bundle);
+        return tabFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
 
         //Adapter has a listener interface implemented.
         handleDialog(adapter);
 
         /** Check if the List is empty, if it is then get the list from the local Database.
          *
-        */
+         */
         if(mStudentList.size()<1) {
 
             mStudentList.addAll(studentHelperDatabase.refreshStudentListfromDb());
 
         }
+
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
     }
 
@@ -146,7 +147,7 @@ public class StudentActivity extends AppCompatActivity {
                 final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
 
                 //Alert Dialog that has context of this activity.
-                AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Choose from below");
                 final StudentTemplate whichStudent = mStudentList.get(position);
                 //Sets the items of the Dialog.
@@ -159,7 +160,7 @@ public class StudentActivity extends AppCompatActivity {
                         switch (which) {
                             case viewStudent:
                                 //Send the intent if the User chooses the VIEW option.
-                                Intent forView = new Intent(StudentActivity.this,
+                                Intent forView = new Intent(getContext(),
                                         CreateStudentActivity.class);
                                 forView.putExtra("thisStudent", whichStudent);
                                 forView.putExtra("thisIsView", 101);
@@ -178,7 +179,7 @@ public class StudentActivity extends AppCompatActivity {
                                 break;
                             //Delete the Student.
                             case deleteStudent:
-                                final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(StudentActivity.this);
+                                final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getContext());
                                 deleteDialog.setTitle(R.string.deletetitle);
                                 deleteDialog.setMessage(R.string.want_to_delete_or_not);
                                 deleteDialog.setPositiveButton(R.string.deleteconfirm, new DialogInterface.OnClickListener() {
@@ -218,24 +219,24 @@ public class StudentActivity extends AppCompatActivity {
         return this.POSITION_STUDENT;
     }
 
-    //Creates an intent that requests for Student Object from the CreateStudentActivity Activity.
-    public void addStudentButton(View view) {
-
-        ArrayList<Integer> currentRollList;
-        Intent i = new Intent(this, CreateStudentActivity.class);
-        //If there is any student in the list then send the rolls Id list.
-        if(mStudentList.size()>0) {
-            currentRollList=makeRollIdsList(mStudentList);
-            i.putExtra("rollsList", currentRollList);
-        }
-        startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
-    }
+//    //Creates an intent that requests for Student Object from the CreateStudentActivity Activity.
+//    public void addStudentButton(View view) {
+//
+//        ArrayList<Integer> currentRollList;
+//        Intent i = new Intent(this, CreateStudentActivity.class);
+//        //If there is any student in the list then send the rolls Id list.
+//        if(mStudentList.size()>0) {
+//            currentRollList=makeRollIdsList(mStudentList);
+//            i.putExtra("rollsList", currentRollList);
+//        }
+//        startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
+//    }
 
 
     /**
-    Gets the intent that can have both the added student and the updated student. We will have
-    a check inside to see which is which.
-    */
+     Gets the intent that can have both the added student and the updated student. We will have
+     a check inside to see which is which.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(resultCode==RESULT_OK) {
@@ -284,7 +285,7 @@ public class StudentActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Collections.sort(mStudentList, new SortByName());
                 adapter.notifyDataSetChanged();
-                Toast.makeText(StudentActivity.this, getString(R.string.sortbyname), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.sortbyname), Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -295,7 +296,7 @@ public class StudentActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Collections.sort(mStudentList, (new SortByRoll()));
                 adapter.notifyDataSetChanged();
-                Toast.makeText(StudentActivity.this, getString(R.string.sortbyroll), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.sortbyroll), Toast.LENGTH_LONG).show();
                 return true;
 
             }
@@ -303,14 +304,14 @@ public class StudentActivity extends AppCompatActivity {
         //Switch item is set.
         item.setActionView(R.layout.switch_layout);
         Switch switcherLayout = menu.findItem(R.id.switchitem).getActionView().
-                findViewById(R.id.switcher);
+                findViewById(R.id.switcher);getContext(
         switcherLayout.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    rvStudentList.setLayoutManager(new GridLayoutManager(StudentActivity.this, 2));
+                    rvStudentList.setLayoutManager(new GridLayoutManager(getContext(), 2));
                 } else {
-                    rvStudentList.setLayoutManager(new LinearLayoutManager(StudentActivity.this));
+                    rvStudentList.setLayoutManager(new LinearLayoutManager(getActivity()));
                 }
             }
         });
@@ -358,7 +359,7 @@ public class StudentActivity extends AppCompatActivity {
                     case useService:
 
                         //Send the intent if the User chooses the VIEW option.
-                        Intent forService = new Intent(StudentActivity.this,
+                        Intent forService = new Intent(getActivity(),
                                 BackgroundService.class);
                         forService.putExtra("studentForDb", studentToHandle);
                         forService.putExtra("operation",operationOnStudent);
@@ -368,7 +369,7 @@ public class StudentActivity extends AppCompatActivity {
                     //Send the intent if the User choses the EDIT option.
                     case useIntentService:
 
-                        Intent forIntentService = new Intent(StudentActivity.this,
+                        Intent forIntentService = new Intent(getActivity(),
                                 BackgroundIntentService.class);
                         forIntentService.putExtra("studentForDb", studentToHandle);
                         forIntentService.putExtra("operation",operationOnStudent);
@@ -394,5 +395,4 @@ public class StudentActivity extends AppCompatActivity {
         mAlert.show();
 
     }
-
 }

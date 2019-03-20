@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.StudentAddFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/tvAddStudentDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin10"
+        android:text="@string/add_student_details"
+        android:textAlignment="center"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="@dimen/margin20"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvStudentDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin10"
+        android:text="@string/details_student"
+        android:textAlignment="center"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="@dimen/margin20"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/etStudentNameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvAddStudentDetails"
+        android:layout_marginTop="@dimen/margin20"
+        android:ems="10"
+        android:hint="@string/namehint"
+        android:inputType="textPersonName"
+        android:textColor="@color/cardview_light_background" />
+
+    <EditText
+        android:id="@+id/etStudentRollNumberText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStudentNameText"
+        android:layout_marginTop="@dimen/margin20"
+        android:hint="@string/rollhint"
+        android:inputType="number"
+        android:textColor="@color/cardview_light_background" />
+
+
+    <EditText
+        android:id="@+id/etStudentStandardText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStudentRollNumberText"
+        android:layout_marginTop="@dimen/margin20"
+        android:ems="10"
+        android:hint="@string/standardhint"
+        android:inputType="number"
+        android:textColor="@color/cardview_light_background"
+        />
+
+    <EditText
+        android:id="@+id/etStudentAgeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStudentStandardText"
+        android:layout_marginTop="@dimen/margin20"
+        android:ems="10"
+        android:hint="@string/agehint"
+        android:inputType="number"
+        android:textColor="@color/cardview_light_background" />
+
+    <Button
+        android:id="@+id/btnSaveStudent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStudentAgeText"
+        android:layout_marginTop="@dimen/margin20"
+        android:onClick="addStudentButton"
+        android:text="@string/save_student_button"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnUpdateStudent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStudentAgeText"
+        android:layout_marginTop="@dimen/marginbutton"
+        android:onClick="updateStudentButton"
+        android:text="@string/update_student_button"
+        android:visibility="visible" />
+
+</FrameLayout>
