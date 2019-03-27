@@ -76,5 +76,17 @@ public class StudentActivity extends AppCompatActivity implements Communicator {
         changeTab();
     }
 
+    @Override
+    public void onBackPressed() {
 
+        if(viewPager.getCurrentItem()>=1){
+            viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
+
+        }
+        else {
+            super.onBackPressed();
+            Toast.makeText(this,"Press Back Again To Exit",Toast.LENGTH_SHORT).show();
+        }
+
+    }
 }

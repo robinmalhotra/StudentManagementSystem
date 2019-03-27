@@ -5,15 +5,18 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
+import com.example.studentmanagementsystem.util.Constants;
 
 public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private SQLiteDatabase db;
+    String oldIdofStudent;
 
     public BackgroundAsyncTasks(Context context) {
         this.context=context;
@@ -27,23 +30,28 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
         StudentTemplate studentForDb = (StudentTemplate) objects[0];
         String operationOnStudent = (String) objects[1];
-        String oldIdofStudent = (String) objects[2];
+
+        if(objects[2]!=null){
+            oldIdofStudent = (String) objects[2];
+            Log.d("yyyyyy", "doInBackground: "+ oldIdofStudent);
+        }
+
 
         StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
         switch (operationOnStudent){
-            case "addIt":
+            case Constants.ADD_IT:
 
                 db=dbHelper.getWritableDatabase();
                 dbHelper.addStudentinDb(studentForDb);
                 db.close();
                 break;
-            case "updateIt":
+            case Constants.UPDATE_IT:
 
                 db=dbHelper.getWritableDatabase();
                 dbHelper.updateStudentInDb(studentForDb,oldIdofStudent);
                 db.close();
                 break;
-            case "deleteIt":
+            case Constants.DELETE_IT:
                 db=dbHelper.getWritableDatabase();
                 dbHelper.deleteStudentInDb(studentForDb);
                 db.close();

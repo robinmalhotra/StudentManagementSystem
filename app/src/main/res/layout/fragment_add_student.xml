@@ -1,88 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPrimaryDark"
-    tools:context=".activity.StudentActivity">
+    android:layout_height="match_parent">
 
-
-
-    <TextView
-        android:id="@+id/tvAddStudentDetails"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin10"
-        android:text="@string/add_student_details"
-        android:textAlignment="center"
-        android:textColor="@color/cardview_light_background"
-        android:textSize="@dimen/margin20"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvStudentDetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin10"
-        android:text="@string/details_student"
-        android:textAlignment="center"
-        android:textColor="@color/cardview_light_background"
-        android:textSize="@dimen/margin20"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <EditText
-        android:id="@+id/etStudentNameText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="@dimen/margin20"
-        android:ems="10"
-        android:hint="@string/namehint"
-        android:inputType="textPersonName"
-        android:textColor="@color/cardview_light_background" />
-
-    <EditText
-        android:id="@+id/etStudentRollNumberText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin20"
-        android:hint="@string/rollhint"
-        android:inputType="number"
-        android:textColor="@color/cardview_light_background" />
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical"
+        tools:context=".activity.StudentActivity">
 
 
-    <EditText
-        android:id="@+id/etStudentStandardText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/tvAddStudentDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:text="@string/add_student_details"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="@dimen/margin20"
+            android:textStyle="bold" />
 
-        android:layout_marginTop="@dimen/margin20"
-        android:ems="10"
-        android:hint="@string/standardhint"
-        android:inputType="number"
-        android:textColor="@color/cardview_light_background"
-        />
+        <TextView
+            android:id="@+id/tvStudentDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:text="@string/details_student"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="@dimen/margin20"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/etStudentAgeText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:layout_marginTop="@dimen/margin20"
-        android:ems="10"
-        android:hint="@string/agehint"
-        android:inputType="number"
-        android:textColor="@color/cardview_light_background" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin20"
+            android:text="@string/name"
+            android:textColor="@color/colorHolder" />
 
-    <Button
-        android:id="@+id/btnSaveStudent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin20"
-        android:text="@string/save_student_button"
-        android:visibility="visible" />
+        <EditText
+            android:id="@+id/etStudentNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-</LinearLayout>
+            android:layout_marginTop="@dimen/margin20"
+            android:ems="10"
+            android:hint="@string/namehint"
+            android:inputType="textPersonName"
+            android:textColor="@color/cardview_light_background" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin20"
+            android:text="@string/roll_no"
+            android:textColor="@color/colorHolder" />
+
+        <EditText
+            android:id="@+id/etStudentRollNumberText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:hint="@string/rollhint"
+            android:inputType="number"
+            android:textColor="@color/cardview_light_background" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:layout_gravity="center"
+            android:text="@string/standard"
+            android:textColor="@color/colorHolder" />
+
+
+        <EditText
+            android:id="@+id/etStudentStandardText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="@dimen/margin20"
+            android:ems="10"
+            android:hint="@string/standardhint"
+            android:inputType="number"
+            android:textColor="@color/cardview_light_background" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:layout_gravity="center"
+            android:text="@string/age"
+            android:textColor="@color/colorHolder" />
+
+        <EditText
+            android:id="@+id/etStudentAgeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="@dimen/margin20"
+            android:ems="10"
+            android:hint="@string/agehint"
+            android:inputType="number"
+            android:textColor="@color/cardview_light_background" />
+
+        <Button
+            android:id="@+id/btnSaveStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:text="@string/save_student_button"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</ScrollView>
+

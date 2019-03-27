@@ -41,6 +41,10 @@
     <string name="error">Error in retrieving data. Please try again</string>
     <string name="editstudenttitle">Edit Student</string>
     <string name="addstudenttext">Add Student</string>
+    <string name="age">Age</string>
+    <string name="standard">Standard</string>
+    <string name="roll_no">Roll No.</string>
+    <string name="name">Name</string>
 
     <string-array name="Dialog_Operations">
         <item>View</item>

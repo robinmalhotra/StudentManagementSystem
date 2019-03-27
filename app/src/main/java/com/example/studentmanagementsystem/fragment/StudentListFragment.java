@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.example.studentmanagementsystem.R;
 import com.example.studentmanagementsystem.activity.CreateStudentActivity;
-import com.example.studentmanagementsystem.activity.StudentActivity;
 import com.example.studentmanagementsystem.adapter.StudentAdapter;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
@@ -42,13 +41,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static android.app.Activity.RESULT_OK;
-
 public class StudentListFragment extends Fragment {
 
-    private LayoutInflater inflater;
-    private ViewGroup container;
-    private Bundle savedInstanceState;
+
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
     private String[] mDialogItems;
     private RecyclerView rvStudentList;
@@ -65,7 +60,6 @@ public class StudentListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
     }
 
     @Nullable
@@ -77,6 +71,7 @@ public class StudentListFragment extends Fragment {
         studentHelperDatabase = new StudentHelperDatabase(getContext());
         studentHelperDatabase.getWritableDatabase();
         init(view);
+        //Get the student list from database.
         if(mStudentList.size()<1) {
             mStudentList.addAll(studentHelperDatabase.refreshStudentListfromDb());
         }
@@ -87,6 +82,10 @@ public class StudentListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initialise Components.
+     * @param view
+     */
     private void init(View view) {
 
         adapter = new StudentAdapter(mStudentList);
@@ -122,7 +121,6 @@ public class StudentListFragment extends Fragment {
         }catch (ClassCastException e) {
             throw new ClassCastException(getString(R.string.error));
         }
-
     }
 
     @Override
@@ -172,6 +170,7 @@ public class StudentListFragment extends Fragment {
 
                             case editStudent:
                                 Bundle bundle = new Bundle();
+                                bundle.putString(Constants.CODE_TO_ADD_STUDENT,Constants.UPDATE_IT);
                                 bundle.putParcelable(Constants.THISSTUDENT,whichStudent);
                                 mCommunicator.communicateUpdate(bundle);
 
@@ -200,14 +199,22 @@ public class StudentListFragment extends Fragment {
     }
 
 
-
+    /**
+     * When the second fragment makes a student object either by adding new or updating the old one,
+     * this function checks how to add it back to the Array List.
+     * @param bundle
+     */
     public void addStudent(Bundle bundle) {
+
+        //Add new student.
         if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.ADD_IT)) {
             StudentTemplate student = new StudentTemplate(bundle.getString(Constants.NAME),
                     bundle.getString(Constants.ROLL_NO),bundle.getString(Constants.STANDARD),
                     bundle.getString(Constants.AGE));
             mStudentList.add(student);
             adapter.notifyDataSetChanged();
+
+        //Update old student.
         }else if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.UPDATE_IT)){
             StudentTemplate student=mStudentList.get(getPositionStudent());
             student.setStudentTemplateRoll(bundle.getString(Constants.ROLL_NO));
@@ -218,27 +225,25 @@ public class StudentListFragment extends Fragment {
         }
 
     }
+
+    /**
+     * When we click the student on the recycler view's list, this funciton sends an intent to
+     * open another activity that shows the student.
+     * @param student
+     */
     private void viewDetails(StudentTemplate student){
 
-        Intent forView = new Intent(mContext,
-                CreateStudentActivity.class);
-
-//        final Bundle bundleToSend = new Bundle();
-
-        //bundleToSend.putParcelable(Constants.STUDENT_LIST_FROM_MAIN,student);
-//        bundleToSend.putString(Constants.VIEW_NAME,student.getStudentTemplateName());
-//
-//        bundleToSend.putString(Constants.VIEW_STANDARD,student.getStudentTemplateStandard());
-//
-//        bundleToSend.putString(Constants.VIEW_ROLL,student.getStudentTemplateRoll());
-//
-//        bundleToSend.putString(Constants.VIEW_AGE,student.getStudentTemplateAge());
+        Intent forView = new Intent(mContext, CreateStudentActivity.class);
 
         forView.putExtra(Constants.CODE_TO_ADD_STUDENT,Constants.VIEW);
         forView.putExtra(Constants.THISSTUDENT,student);
         mContext.startActivity(forView);
     }
 
+    /**Generates a dialog when a student from the recycler view list is chosen to be deleted.
+     *
+     * @param position of the student that needs to be deleted.
+     */
     private void studentDelete(final int position) {
         final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(mContext);
         deleteDialog.setTitle(R.string.deletetitle);
@@ -263,19 +268,6 @@ public class StudentListFragment extends Fragment {
     }
 
 
-    //Creates a Roll Ids list out from the student list to make the Parcelable object light.
-    //@returns: String Array containing the List of Roll Numbers
-    //@params: ArrayList of Students;
-    public ArrayList<Integer> makeRollIdsList(ArrayList<StudentTemplate> listForRolls) {
-
-        int listSize= listForRolls.size();
-        ArrayList<Integer> rollsList=new ArrayList<Integer>();
-        for(int thisStudentRoll=0;thisStudentRoll<listSize;thisStudentRoll++) {
-            rollsList.add(Integer.parseInt(listForRolls.
-                    get(thisStudentRoll).getStudentTemplateRoll()));
-        }
-        return rollsList;
-    }
     /** Generates Dialog box when we press Delete option in the Dialog already on the screen.
      * Choice 1: via Service
      * Choice 2: via Intent Service
@@ -324,7 +316,7 @@ public class StudentListFragment extends Fragment {
                     //Delete the Student.
                     case useAsyncTasks:
                         BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(mContext);
-                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent);
+                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,null);
 
                         break;
                     default:

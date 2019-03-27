@@ -33,12 +33,14 @@ import com.example.studentmanagementsystem.util.Constants;
 import com.example.studentmanagementsystem.validate.Validate;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class StudentAddFragment extends Fragment {
     private String oldIdOfStudent;
     private StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
     private Button mAddStudentButton;
     private EditText etStudentName, etStudentRoll, etStudentStandard, etStudentAge;
+    private TextView tvStudentDetails;
     private Context mContext;
     private Communicator mCommunicator;
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
@@ -50,7 +52,6 @@ public class StudentAddFragment extends Fragment {
 
         IntentFilter intentFilter = new IntentFilter(Constants.FILTER_ACTION_KEY);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(studentBroadcastReceiver,intentFilter);
-
 
     }
 
@@ -72,6 +73,14 @@ public class StudentAddFragment extends Fragment {
 
     }
 
+    public String getOldIdOfStudent() {
+        return oldIdOfStudent;
+    }
+
+    public void setOldIdOfStudent(String oldIdOfStudent) {
+        this.oldIdOfStudent = oldIdOfStudent;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,14 +91,17 @@ public class StudentAddFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Initialise components.
+     * @param view
+     */
     public void init(View view) {
-        Log.d("yyyyyy", "init: ");
          etStudentName = view.findViewById(R.id.etStudentNameText);
          etStudentRoll = view.findViewById(R.id.etStudentRollNumberText);
          etStudentStandard = view.findViewById(R.id.etStudentStandardText);
          etStudentAge = view.findViewById(R.id.etStudentAgeText);
          mAddStudentButton = view.findViewById(R.id.btnSaveStudent);
+         tvStudentDetails = view.findViewById(R.id.tvAddStudentDetails);
     }
 
     @Override
@@ -115,12 +127,21 @@ public class StudentAddFragment extends Fragment {
      *@param bundle - to pass data
      */
     public void updateStudent(Bundle bundle){
-        Log.d("yyyyyy", "updateStudent: ");
-        if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.UPDATE_IT)) {
-            etStudentName.setText(bundle.getString(Constants.NAME));
-            etStudentRoll.setText(bundle.getString(Constants.ROLL_NO));
-            etStudentStandard.setText(bundle.getString(Constants.STANDARD));
-            etStudentAge.setText(bundle.getString(Constants.AGE));
+
+        if(Objects.equals(bundle.getString(Constants.CODE_TO_ADD_STUDENT), Constants.UPDATE_IT)) {
+
+            StudentTemplate studentTemplate = bundle.getParcelable(Constants.THISSTUDENT);
+            assert studentTemplate != null;
+
+            //Set the Edittext fields as per the student that needs to be updated.
+            etStudentName.setText(studentTemplate.getStudentTemplateName());
+            Log.d("yyyyyy", "updateStudent: " + studentTemplate.getStudentTemplateName());
+            etStudentRoll.setText(studentTemplate.getStudentTemplateRoll());
+            etStudentStandard.setText(studentTemplate.getStudentTemplateStandard());
+            etStudentAge.setText(studentTemplate.getStudentTemplateAge());
+
+            setOldIdOfStudent(studentTemplate.getStudentTemplateRoll());
+
             editMode();
 
         }else if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.ADD_IT)){
@@ -130,12 +151,13 @@ public class StudentAddFragment extends Fragment {
             onClickButton();
         }
     }
-    // For the Activity that only shows the Student Details.
-    public void viewMode(StudentTemplate student){
-        Log.d("yyyyyy", "viewMode: ");
 
-        //StudentTemplate student = bundleData.getParcelable(Constants.STUDENT_LIST_FROM_MAIN);
-        Log.d("yyyyyy", "viewMode: " + student.getStudentTemplateName());
+    /**
+     * For the Activity that only shows the Student Details.
+      * @param student
+     */
+    public void viewMode(StudentTemplate student){
+
         etStudentName.setText(student.getStudentTemplateName());
         etStudentRoll.setText(student.getStudentTemplateRoll());
         etStudentStandard.setText(student.getStudentTemplateStandard());
@@ -148,14 +170,14 @@ public class StudentAddFragment extends Fragment {
         etStudentAge.setEnabled(false);
     }
 
-    //method to edit details of student
+    /**
+     * method to edit details of student
+     */
     @SuppressLint("SetTextI18n")
     public void editMode() {
         getActivity().setTitle(R.string.editstudenttitle);
-
-        mAddStudentButton.findViewById(R.id.btnSaveStudent);
-        mAddStudentButton.setText("Update Student");
-        //to return name and roll number through bundle to StudentList Fragment and update data using preferred operation
+        tvStudentDetails.setText(Constants.UPDATE_STUDENT_DETAILS);
+        mAddStudentButton.setText(Constants.UPDATE_STUDENT_DETAILS);
         mAddStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,7 +191,7 @@ public class StudentAddFragment extends Fragment {
                 bundle.putString(Constants.ROLL_NO,roll);
                 bundle.putString(Constants.STANDARD,standard);
                 bundle.putString(Constants.AGE,age);
-                generateDialog(bundle,Constants.UPDATE_IT,roll);
+                generateDialog(bundle,Constants.UPDATE_IT,getOldIdOfStudent());
             }
         });
     }
@@ -242,6 +264,9 @@ public class StudentAddFragment extends Fragment {
 
     }
 
+    /**
+     * When the add student button is clicked for a new student to be added.
+     */
     public void onClickButton() {
         mAddStudentButton.findViewById(R.id.btnSaveStudent);
 
@@ -290,14 +315,12 @@ public class StudentAddFragment extends Fragment {
         });
     }
 
-    }
-
 
 
     /**Inner broadcast receiver that receives the broadcast if the services have indeed added the elements
      * in the database.
      */
-    class StudentBroadcastReceiver extends BroadcastReceiver {
+    public class StudentBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -308,7 +331,7 @@ public class StudentAddFragment extends Fragment {
         }
     }
 
-
+}
 
 
 

@@ -23,9 +23,9 @@
 
         <service android:name=".backgrounddbhandle.BackgroundService" />
         <service android:name=".backgrounddbhandle.BackgroundIntentService" />
-        <receiver android:name=".broadcastreceiver.StudentBroadcastReceiver" >
 
-        </receiver>
+
+        <receiver android:name=".fragment.StudentAddFragment$StudentBroadcastReceiver" />
 
 
     </application>
