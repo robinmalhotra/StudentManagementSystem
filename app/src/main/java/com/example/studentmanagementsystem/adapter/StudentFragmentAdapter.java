@@ -10,13 +10,10 @@ import com.example.studentmanagementsystem.fragment.StudentListFragment;
 
 public class StudentFragmentAdapter extends FragmentPagerAdapter {
 
-    private int numberOfTabs;
-
     private String title[] = {"Student List","Add Student Details"};
 
-    public StudentFragmentAdapter(FragmentManager fm, int numberOfTabs) {
+    public StudentFragmentAdapter(FragmentManager fm){
         super(fm);
-        this.numberOfTabs = numberOfTabs;
     }
 
     @Override
@@ -32,13 +29,11 @@ public class StudentFragmentAdapter extends FragmentPagerAdapter {
                 return null;
         }
 
-
-
     }
 
     @Override
     public int getCount() {
-        return numberOfTabs;
+        return 2;
     }
 
     @Override

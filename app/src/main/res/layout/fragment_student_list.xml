@@ -7,13 +7,6 @@
     tools:context=".activity.StudentActivity"
     android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view_pager">
-
-    </android.support.v4.view.ViewPager>
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rlRecycler_list"
@@ -30,7 +23,6 @@
         android:layout_height="wrap_content"
         android:text="@string/add_student_button"
         android:textColor="@color/cardview_light_background"
-        android:onClick="addStudentButton"
         android:background="@color/colorPrimary"
 
         />
