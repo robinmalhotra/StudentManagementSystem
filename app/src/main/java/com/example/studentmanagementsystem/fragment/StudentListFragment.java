@@ -156,6 +156,8 @@ public class StudentListFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("Choose from below");
                 final StudentTemplate whichStudent = mStudentList.get(position);
+
+
                 //Sets the items of the Dialog.
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
@@ -165,11 +167,7 @@ public class StudentListFragment extends Fragment {
 
                         switch (which) {
                             case viewStudent:
-                                //Send the intent if the User chooses the VIEW option.
-                                Intent forView = new Intent(mContext,
-                                        CreateStudentActivity.class);
-                               viewDetails(forView,whichStudent);
-
+                               viewDetails(whichStudent);
                                 break;
 
                             case editStudent:
@@ -220,10 +218,25 @@ public class StudentListFragment extends Fragment {
         }
 
     }
-    private void viewDetails(Intent intent,StudentTemplate student){
-        intent.putExtra(Constants.CODE_TO_ADD_STUDENT,Constants.VIEW);
-        intent.putExtra(Constants.THISSTUDENT,student);
-        mContext.startActivity(intent);
+    private void viewDetails(StudentTemplate student){
+
+        Intent forView = new Intent(mContext,
+                CreateStudentActivity.class);
+
+//        final Bundle bundleToSend = new Bundle();
+
+        //bundleToSend.putParcelable(Constants.STUDENT_LIST_FROM_MAIN,student);
+//        bundleToSend.putString(Constants.VIEW_NAME,student.getStudentTemplateName());
+//
+//        bundleToSend.putString(Constants.VIEW_STANDARD,student.getStudentTemplateStandard());
+//
+//        bundleToSend.putString(Constants.VIEW_ROLL,student.getStudentTemplateRoll());
+//
+//        bundleToSend.putString(Constants.VIEW_AGE,student.getStudentTemplateAge());
+
+        forView.putExtra(Constants.CODE_TO_ADD_STUDENT,Constants.VIEW);
+        forView.putExtra(Constants.THISSTUDENT,student);
+        mContext.startActivity(forView);
     }
 
     private void studentDelete(final int position) {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorPrimaryDark"
     tools:context=".activity.StudentActivity">
 
@@ -36,7 +37,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/etStudentNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddStudentDetails"
+
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/namehint"
@@ -47,7 +48,6 @@ xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/etStudentRollNumberText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentNameText"
         android:layout_marginTop="@dimen/margin20"
         android:hint="@string/rollhint"
         android:inputType="number"
@@ -58,7 +58,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/etStudentStandardText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentRollNumberText"
+
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/standardhint"
@@ -70,7 +70,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/etStudentAgeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentStandardText"
+
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/agehint"
@@ -81,9 +81,8 @@ xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/btnSaveStudent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentAgeText"
         android:layout_marginTop="@dimen/margin20"
         android:text="@string/save_student_button"
         android:visibility="visible" />
 
-</RelativeLayout>
+</LinearLayout>

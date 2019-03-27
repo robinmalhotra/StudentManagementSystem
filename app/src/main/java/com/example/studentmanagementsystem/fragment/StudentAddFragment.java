@@ -35,9 +35,7 @@ import com.example.studentmanagementsystem.validate.Validate;
 import java.util.ArrayList;
 
 public class StudentAddFragment extends Fragment {
-    private StudentHelperDatabase studentHelperDatabase;
     private String oldIdOfStudent;
-    private Context context;
     private StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
     private Button mAddStudentButton;
     private EditText etStudentName, etStudentRoll, etStudentStandard, etStudentAge;
@@ -86,6 +84,7 @@ public class StudentAddFragment extends Fragment {
 
 
     public void init(View view) {
+        Log.d("yyyyyy", "init: ");
          etStudentName = view.findViewById(R.id.etStudentNameText);
          etStudentRoll = view.findViewById(R.id.etStudentRollNumberText);
          etStudentStandard = view.findViewById(R.id.etStudentStandardText);
@@ -132,11 +131,16 @@ public class StudentAddFragment extends Fragment {
         }
     }
     // For the Activity that only shows the Student Details.
-    public void viewMode(Bundle bundleData){
-        etStudentName.setText(bundleData.getString(Constants.VIEW_NAME));
-        etStudentRoll.setText(bundleData.getString(Constants.VIEW_ROLL));
-        etStudentStandard.setText(bundleData.getString(Constants.VIEW_STANDARD));
-        etStudentAge.setText(bundleData.getString(Constants.VIEW_AGE));
+    public void viewMode(StudentTemplate student){
+        Log.d("yyyyyy", "viewMode: ");
+
+        //StudentTemplate student = bundleData.getParcelable(Constants.STUDENT_LIST_FROM_MAIN);
+        Log.d("yyyyyy", "viewMode: " + student.getStudentTemplateName());
+        etStudentName.setText(student.getStudentTemplateName());
+        etStudentRoll.setText(student.getStudentTemplateRoll());
+        etStudentStandard.setText(student.getStudentTemplateStandard());
+        etStudentAge.setText(student.getStudentTemplateAge());
+
         mAddStudentButton.setVisibility(View.GONE);
         etStudentName.setEnabled(false);
         etStudentRoll.setEnabled(false);
