@@ -140,6 +140,8 @@ public class StudentAddFragment extends Fragment {
             etStudentStandard.setText(studentTemplate.getStudentTemplateStandard());
             etStudentAge.setText(studentTemplate.getStudentTemplateAge());
 
+            mStudentList=bundle.getParcelableArrayList(Constants.STUDENT_LIST_FROM_MAIN);
+
             setOldIdOfStudent(studentTemplate.getStudentTemplateRoll());
 
             editMode();
@@ -168,6 +170,10 @@ public class StudentAddFragment extends Fragment {
         etStudentRoll.setEnabled(false);
         etStudentStandard.setEnabled(false);
         etStudentAge.setEnabled(false);
+        etStudentName.setFocusable(false);
+        etStudentRoll.setFocusable(false);
+        etStudentStandard.setFocusable(false);
+        etStudentAge.setFocusable(false);
     }
 
     /**
@@ -177,21 +183,41 @@ public class StudentAddFragment extends Fragment {
     public void editMode() {
         getActivity().setTitle(R.string.editstudenttitle);
         tvStudentDetails.setText(Constants.UPDATE_STUDENT_DETAILS);
+        etStudentRoll.setEnabled(false);
         mAddStudentButton.setText(Constants.UPDATE_STUDENT_DETAILS);
         mAddStudentButton.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                String name = etStudentName.getText().toString().trim();
-                String roll = etStudentRoll.getText().toString().trim();
-                String standard = etStudentStandard.getText().toString().trim();
-                String age = etStudentAge.getText().toString().trim();
-                Bundle bundle= new Bundle();
-                bundle.putString(Constants.CODE_TO_ADD_STUDENT,Constants.UPDATE_IT);
-                bundle.putString(Constants.NAME,name);
-                bundle.putString(Constants.ROLL_NO,roll);
-                bundle.putString(Constants.STANDARD,standard);
-                bundle.putString(Constants.AGE,age);
-                generateDialog(bundle,Constants.UPDATE_IT,getOldIdOfStudent());
+                //to check if the the entered name is in valid format
+                if (!Validate.isValidName(etStudentName.getText().toString().trim())) {
+                    etStudentName.requestFocus();
+                    etStudentName.setError("Enter Valid Name");
+                }
+                //to check if the the entered roll number is in valid format
+                else if (!Validate.isValidRollNo(etStudentRoll.getText().toString().trim())) {
+                    etStudentRoll.requestFocus();
+                    etStudentRoll.setError("Enter Valid Roll");
+
+                }
+
+
+                else{
+                    String name = etStudentName.getText().toString().trim();
+                    Log.d("yyyyyy", "onClick: "+name);
+                    String roll = etStudentRoll.getText().toString().trim();
+                    String standard = etStudentStandard.getText().toString().trim();
+                    String age = etStudentAge.getText().toString().trim();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.CODE_TO_ADD_STUDENT, Constants.UPDATE_IT);
+                    bundle.putString(Constants.NAME, name);
+                    bundle.putString(Constants.ROLL_NO, roll);
+                    bundle.putString(Constants.STANDARD, standard);
+                    bundle.putString(Constants.AGE, age);
+                    generateDialog(bundle, Constants.UPDATE_IT, getOldIdOfStudent());
+                    clearDetails();
+                }
             }
         });
     }
@@ -310,9 +336,21 @@ public class StudentAddFragment extends Fragment {
                 etStudentStandard.getText().clear();
                 etStudentAge.getText().clear();
 
+
+
                 generateDialog(bundle,Constants.ADD_IT,roll);
             }
         });
+    }
+
+    /**
+     * To clear the details when we swipe to the next fragment
+     */
+    public void clearDetails() {
+        etStudentName.getText().clear();
+        etStudentRoll.getText().clear();
+        etStudentStandard.getText().clear();
+        etStudentAge.getText().clear();
     }
 
 
@@ -330,6 +368,7 @@ public class StudentAddFragment extends Fragment {
 
         }
     }
+
 
 }
 

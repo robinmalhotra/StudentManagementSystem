@@ -23,14 +23,7 @@ public class StudentFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i){
             case 0:
-
-
-                FragmentTransaction ft=ffm.beginTransaction();
-                ft.addToBackStack(null);
-                StudentListFragment st = new StudentListFragment();
-                ft.commit();
-
-                return st;
+                return new StudentListFragment();
 
             case 1:
                 return new StudentAddFragment();

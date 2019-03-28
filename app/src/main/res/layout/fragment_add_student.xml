@@ -117,7 +117,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin20"
             android:text="@string/save_student_button"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:background="@color/colorPrimary"/>
 
     </LinearLayout>
 </ScrollView>
