@@ -23,6 +23,7 @@ public class Constants {
     public static final String VIEW_AGE = "viewage";
 
     public static final String UPDATE_STUDENT_DETAILS = "Update Student Details";
+    public static final String ADD_STUDENT_DETAILS = "Enter Student Details";
 
     public static final String NAME_MATCH ="^[a-zA-Z\\s]+$";
     public static final String ROLL_MATCH ="[+-]?[0-9][0-9]*";

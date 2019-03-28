@@ -199,7 +199,6 @@ public class StudentAddFragment extends Fragment {
                 else if (!Validate.isValidRollNo(etStudentRoll.getText().toString().trim())) {
                     etStudentRoll.requestFocus();
                     etStudentRoll.setError("Enter Valid Roll");
-
                 }
 
 
@@ -294,26 +293,32 @@ public class StudentAddFragment extends Fragment {
      * When the add student button is clicked for a new student to be added.
      */
     public void onClickButton() {
-        mAddStudentButton.findViewById(R.id.btnSaveStudent);
 
+        getActivity().setTitle("Add New Student");
+        tvStudentDetails.setText(Constants.ADD_STUDENT_DETAILS);
+        mAddStudentButton.findViewById(R.id.btnSaveStudent);
+        etStudentRoll.setEnabled(true);
         mAddStudentButton.setText(getString(R.string.addstudenttext));
         mAddStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //to check if the the entered name is in valid format
                 if (!Validate.isValidName(etStudentName.getText().toString().trim())) {
+                    etStudentName.requestFocus();
                     Toast.makeText(mContext, "Invalid Name",
                             Toast.LENGTH_LONG).show();
                     return;
                 }
                 //to check if the the entered roll number is in valid format
                 if (!Validate.isValidRollNo(etStudentRoll.getText().toString().trim())) {
+                    etStudentRoll.requestFocus();
                     Toast.makeText(mContext, "Invalid Roll No.",
                             Toast.LENGTH_LONG).show();
                     return;
                 }
                 //to check if the the entered roll number is unique or not
                 if (!Validate.isUniqueRollNo(etStudentRoll.getText().toString().trim(),mStudentList)) {
+                    etStudentRoll.requestFocus();
                     Toast.makeText(getContext(), "Roll no. Not Unique",
                             Toast.LENGTH_LONG).show();
                     return;
@@ -363,7 +368,7 @@ public class StudentAddFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
 
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(500);
+            vibrator.vibrate(100);
             Toast.makeText(context,"Broadcast Received",Toast.LENGTH_SHORT).show();
 
         }

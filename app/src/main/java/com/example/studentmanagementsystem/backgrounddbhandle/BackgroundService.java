@@ -50,6 +50,7 @@ public class BackgroundService extends Service {
                 databaseHelper.deleteStudentInDb(studentForDb);
                 break;
         }
+
         intent.setAction(FILTER_ACTION_KEY);
         String echoMessage = "Broadcast Receiver" ;
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent.putExtra("broadcastMessage", echoMessage));

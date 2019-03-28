@@ -47,9 +47,9 @@ public class StudentActivity extends AppCompatActivity implements Communicator {
         //to add tabLayout in view pager
         TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-//        clearNextFragment();
 
-    }
+
+//  }
 //    private void clearNextFragment(){
 //        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 //            @Override
@@ -66,13 +66,14 @@ public class StudentActivity extends AppCompatActivity implements Communicator {
 //            public void onPageScrollStateChanged(int i) {
 //                String tag =getString(R.string.tag)+R.id.view_pager+":"+1;
 //                StudentAddFragment addStudentFragment = (StudentAddFragment) getSupportFragmentManager().findFragmentByTag(tag);
-                //if(addStudentFragment!=null){
-                //            addStudentFragment.clearDetails();
-                //        }
+//              if(addStudentFragment!=null){
+//                          addStudentFragment.clearDetails();
+//                      }
 //
 //            }
 //        });
 //    }
+    }
 
     public void changeTab(){
         if(viewPager.getCurrentItem()==0){

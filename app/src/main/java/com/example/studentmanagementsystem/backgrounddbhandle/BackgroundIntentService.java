@@ -34,11 +34,6 @@ public class BackgroundIntentService extends IntentService {
         databaseHelper.getWritableDatabase();
         String oldIdofStudent = new String();
 
-
-
-
-
-
         if(intent.hasExtra("oldIdOfStudent")) {
             oldIdofStudent = intent.getStringExtra("oldIdOfStudent");
         }
