@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorPrimaryDark">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,45 +34,86 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nametv"
+        android:id="@+id/tvNameText"
+        android:layout_marginTop="@dimen/margin20"
+        android:textColor="@color/colorHolder"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/margin10"
+        android:layout_below="@id/tvAddStudentDetails"/>
+
     <EditText
         android:id="@+id/etStudentNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddStudentDetails"
-        android:layout_marginTop="@dimen/margin20"
+        android:layout_below="@+id/tvNameText"
+        android:layout_marginTop="@dimen/margin10"
         android:ems="10"
         android:hint="@string/namehint"
         android:inputType="textPersonName"
         android:textColor="@color/cardview_light_background" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/roll_notv"
+        android:id="@+id/tvRollText"
+        android:layout_marginTop="@dimen/margin20"
+        android:textColor="@color/colorHolder"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/margin10"
+        android:layout_below="@id/etStudentNameText"/>
 
     <EditText
         android:id="@+id/etStudentRollNumberText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentNameText"
+        android:layout_below="@+id/tvRollText"
         android:layout_marginTop="@dimen/margin20"
         android:hint="@string/rollhint"
         android:inputType="number"
         android:textColor="@color/cardview_light_background" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/standardtv"
+        android:id="@+id/tvStandardText"
+        android:layout_marginTop="@dimen/margin20"
+        android:textColor="@color/colorHolder"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/margin10"
+        android:layout_below="@id/etStudentRollNumberText"/>
 
 
     <EditText
         android:id="@+id/etStudentStandardText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentRollNumberText"
+        android:layout_below="@+id/tvStandardText"
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/standardhint"
         android:inputType="number"
         android:textColor="@color/cardview_light_background"
        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/agetv"
+        android:id="@+id/tvAgeText"
+        android:layout_marginTop="@dimen/margin20"
+        android:textColor="@color/colorHolder"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/margin10"
+        android:layout_below="@id/etStudentStandardText"/>
 
     <EditText
         android:id="@+id/etStudentAgeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etStudentStandardText"
+        android:layout_below="@+id/tvAgeText"
         android:layout_marginTop="@dimen/margin20"
         android:ems="10"
         android:hint="@string/agehint"
@@ -83,7 +128,8 @@
         android:layout_marginTop="@dimen/margin20"
         android:onClick="addStudentButton"
         android:text="@string/save_student_button"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:background="@color/colorPrimary"/>
 
     <Button
         android:id="@+id/btnUpdateStudent"
@@ -93,7 +139,8 @@
         android:layout_marginTop="@dimen/marginbutton"
         android:onClick="updateStudentButton"
         android:text="@string/update_student_button"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:background="@color/colorPrimary"/>
 
 
-</RelativeLayout>
+</RelativeLayout></ScrollView>

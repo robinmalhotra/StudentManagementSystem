@@ -84,12 +84,13 @@ public class StudentActivity extends AppCompatActivity {
                 //Set the position based on the Viewholder selected by the listener.
                 setPositionStudent(position);
 
-                final String[] items = {"View", "Edit", "Delete"};
+                final String[] items = {getString(R.string.viewitem), getString(R.string.edititem),
+                        getString(R.string.deleteitem)};
                 final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
 
                 //Alert Dialog that has context of this activity.
                 AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
-                builder.setTitle("Choose from below");
+                builder.setTitle(R.string.alertchoice);
                 final StudentTemplate whichStudent = mStudentList.get(position);
                 //Sets the items of the Dialog.
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -103,8 +104,8 @@ public class StudentActivity extends AppCompatActivity {
                                 //Send the intent if the User chooses the VIEW option.
                                 Intent forView = new Intent(StudentActivity.this,
                                         CreateStudentActivity.class);
-                                forView.putExtra("thisStudent", whichStudent);
-                                forView.putExtra("thisIsView", 101);
+                                forView.putExtra(Constants.THISSTUDENT, whichStudent);
+                                forView.putExtra(Constants.THISISVIEW, 101);
                                 startActivityForResult(forView, Constants.CODE_TO_VIEW_STUDENT);
 
                                 break;
@@ -113,8 +114,8 @@ public class StudentActivity extends AppCompatActivity {
                             case editStudent:
                                 Intent forEdit = new Intent(StudentActivity.this,
                                         CreateStudentActivity.class);
-                                forEdit.putExtra("thisStudent", whichStudent);
-                                forEdit.putExtra("thisIsEdit", 102);
+                                forEdit.putExtra(Constants.THISSTUDENT, whichStudent);
+                                forEdit.putExtra(Constants.THISISEDIT, 102);
                                 startActivityForResult(forEdit, Constants.CODE_TO_EDIT_STUDENT);
 
                                 break;
@@ -127,7 +128,7 @@ public class StudentActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        String operationOnStudent = "deleteIt";
+                                        String operationOnStudent = Constants.DELETE_IT;
                                         generateDialog(mStudentList.get(position),operationOnStudent);
                                         mStudentList.remove(position);
 
@@ -188,7 +189,7 @@ public class StudentActivity extends AppCompatActivity {
 
                 int pos=getPositionStudent();
                 assert data != null;
-                studentManipulate=data.getParcelableExtra("updatedStudent");
+                studentManipulate=data.getParcelableExtra(Constants.UPDATEDSTUDENT);
                 mStudentList.get(pos).setStudentTemplateName(studentManipulate.getStudentTemplateName());
                 mStudentList.get(pos).setStudentTemplateStandard(studentManipulate.getStudentTemplateStandard());
                 mStudentList.get(pos).setStudentTemplateRoll(studentManipulate.getStudentTemplateRoll());
@@ -201,7 +202,7 @@ public class StudentActivity extends AppCompatActivity {
             if(requestCode==Constants.CODE_TO_ADD_STUDENT) {
 
                 assert data != null;
-                studentManipulate = data.getParcelableExtra("addedStudent");
+                studentManipulate = data.getParcelableExtra(Constants.ADDEDSTUDENT);
                 mStudentList.add(studentManipulate);
                 adapter.notifyDataSetChanged();
 
@@ -265,7 +266,7 @@ public class StudentActivity extends AppCompatActivity {
     public ArrayList<Integer> makeRollIdsList(ArrayList<StudentTemplate> listForRolls) {
 
         int listSize= listForRolls.size();
-        ArrayList<Integer> rollsList=new ArrayList<Integer>();
+        ArrayList<Integer> rollsList=new ArrayList<>();
         for(int thisStudentRoll=0;thisStudentRoll<listSize;thisStudentRoll++) {
             rollsList.add(Integer.parseInt(listForRolls.
                     get(thisStudentRoll).getStudentTemplateRoll()));
@@ -302,8 +303,8 @@ public class StudentActivity extends AppCompatActivity {
                         //Send the intent if the User chooses the VIEW option.
                         Intent forService = new Intent(StudentActivity.this,
                                 BackgroundService.class);
-                        forService.putExtra("studentForDb", studentToHandle);
-                        forService.putExtra("operation",operationOnStudent);
+                        forService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forService.putExtra(Constants.OPERATION,operationOnStudent);
                         startService(forService);
                         break;
 
@@ -312,8 +313,8 @@ public class StudentActivity extends AppCompatActivity {
 
                         Intent forIntentService = new Intent(StudentActivity.this,
                                 BackgroundIntentService.class);
-                        forIntentService.putExtra("studentForDb", studentToHandle);
-                        forIntentService.putExtra("operation",operationOnStudent);
+                        forIntentService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
                         startService(forIntentService);
 
                         break;

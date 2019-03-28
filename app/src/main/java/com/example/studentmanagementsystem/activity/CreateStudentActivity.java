@@ -70,7 +70,7 @@ public class CreateStudentActivity extends AppCompatActivity {
 
         studentHelperDatabase = new StudentHelperDatabase(this);
 
-        StudentTemplate catchStudent = holdIntent.getParcelableExtra("thisStudent");
+        StudentTemplate catchStudent = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
 
         //Link the EditText fields.
@@ -86,7 +86,7 @@ public class CreateStudentActivity extends AppCompatActivity {
         updateButton.setVisibility(TextView.INVISIBLE);
 
         //To Edit the Student Details from Alert Dialog
-        if (getIntent().hasExtra("thisIsEdit")) {
+        if (getIntent().hasExtra(Constants.THISISEDIT)) {
 
             nameInput.setText(catchStudent.getStudentTemplateName());
             nameInput.setEnabled(true);
@@ -120,7 +120,7 @@ public class CreateStudentActivity extends AppCompatActivity {
         /** To View the Student Details only. This sets the EditText fields disabled so user cant
          *   change it.
          */
-        if (getIntent().hasExtra("thisIsView")) {
+        if (getIntent().hasExtra(Constants.THISISVIEW)) {
 
             nameInput.setText(catchStudent.getStudentTemplateName());
             nameInput.setEnabled(false);
@@ -159,14 +159,18 @@ public class CreateStudentActivity extends AppCompatActivity {
     public void updateStudentButton(View view) {
         EditText nameInput = findViewById(R.id.etStudentNameText);
         nameInput.setEnabled(true);
+        nameInput.setFocusable(true);
         EditText rollInput = findViewById(R.id.etStudentRollNumberText);
         rollInput.setEnabled(true);
+        rollInput.setFocusable(true);
         EditText standardInput = findViewById(R.id.etStudentStandardText);
         standardInput.setEnabled(true);
+        standardInput.setFocusable(true);
         EditText ageInput = findViewById(R.id.etStudentAgeText);
         ageInput.setEnabled(true);
+        ageInput.setFocusable(true);
 
-        StudentTemplate holdStudent = getIntent().getParcelableExtra("thisStudent");
+        StudentTemplate holdStudent = getIntent().getParcelableExtra(Constants.THISSTUDENT);
 
         setOldIdOfStudent(holdStudent.getStudentTemplateRoll());
 
@@ -200,12 +204,16 @@ public class CreateStudentActivity extends AppCompatActivity {
         //Connect the Edit Fields to the EditText refrences and set it Enabled.
         etNameInput = findViewById(R.id.etStudentNameText);
         etNameInput.setEnabled(true);
+        etNameInput.setFocusable(true);
         etRollInput = findViewById(R.id.etStudentRollNumberText);
         etRollInput.setEnabled(true);
+        etRollInput.setFocusable(true);
         etStandardInput = findViewById(R.id.etStudentStandardText);
         etStandardInput.setEnabled(true);
+        etStandardInput.setFocusable(true);
         etAgeInput = findViewById(R.id.etStudentAgeText);
         etAgeInput.setEnabled(true);
+        etAgeInput.setFocusable(true);
 
         //Get the strings that are typed in the EditText Fields.
         String stringOfStudentName = etNameInput.getText().toString();
@@ -217,8 +225,8 @@ public class CreateStudentActivity extends AppCompatActivity {
         boolean rollmatch=false;
 
         //Changes the boolean rollmatch to true and true means we would check for the validation.
-        if(holdIntent.hasExtra("rollsList")){
-            ArrayList<Integer> thisRollsList=holdIntent.getIntegerArrayListExtra("rollsList");
+        if(holdIntent.hasExtra(Constants.ROLLSLIST)){
+            ArrayList<Integer> thisRollsList=holdIntent.getIntegerArrayListExtra(Constants.ROLLSLIST);
             for(Integer thisRoll:thisRollsList) {
                 if(thisRoll==intRoll){
                     rollmatch=true;
@@ -232,7 +240,7 @@ public class CreateStudentActivity extends AppCompatActivity {
             etNameInput.setError(getString(R.string.namecantbeempty));
         }
         //if Name's range lies outside the Alphabetic Range, then show error and request focus.
-        else if (!stringOfStudentName.matches("\\b[a-zA-Z]+\\s[a-zA-Z]+\\b")) {
+        else if (!stringOfStudentName.matches(Constants.NAME_MATCH)) {
             etNameInput.requestFocus();
             etNameInput.setError(getString(R.string.enteralphabetsonly));
         }
@@ -247,12 +255,12 @@ public class CreateStudentActivity extends AppCompatActivity {
             etRollInput.setError(getString(R.string.rolliderror));
         }
         //Standard should be between 1 to 12.
-        else if (!stringOfStudentStandard.matches("([1-9]|1[0-2])")) {
+        else if (!stringOfStudentStandard.matches(Constants.STANDARD_MATCH)) {
             etStandardInput.requestFocus();
-            etStandardInput.setError("Standard should be between 1 - 12");
+            etStandardInput.setError(getString(R.string.standarderror));
         }
         //Age should be between 7 to 18
-        else if (!stringOfStudentAge.matches("([7-9]|1[0-8])")) {
+        else if (!stringOfStudentAge.matches(Constants.AGE_MATCH)) {
             etAgeInput.requestFocus();
             etAgeInput.setError(getString(R.string.ageerror));
         }
@@ -265,9 +273,9 @@ public class CreateStudentActivity extends AppCompatActivity {
             Intent returnStudentIntent = new Intent();
 
 
-            if (checkIntent.hasExtra("thisIsView") || checkIntent.hasExtra("thisIsEdit")) {
+            if (checkIntent.hasExtra(Constants.THISISVIEW) || checkIntent.hasExtra(Constants.THISISEDIT)) {
 
-                StudentTemplate studentToUpdate = holdIntent.getParcelableExtra("thisStudent");
+                StudentTemplate studentToUpdate = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
                 setOldIdOfStudent(studentToUpdate.getStudentTemplateRoll());
                 studentToUpdate.setStudentTemplateName(stringOfStudentName);
@@ -275,10 +283,10 @@ public class CreateStudentActivity extends AppCompatActivity {
                 studentToUpdate.setStudentTemplateStandard(stringOfStudentStandard);
                 studentToUpdate.setStudentTemplateAge(stringOfStudentAge);
 
-                operationOnStudent="updateIt";
+                operationOnStudent=Constants.UPDATE_IT;
 
                 generateDialog(studentToUpdate,operationOnStudent,getOldIdOfStudent());
-                returnStudentIntent.putExtra("updatedStudent", studentToUpdate);
+                returnStudentIntent.putExtra(Constants.UPDATEDSTUDENT, studentToUpdate);
                 setResult(RESULT_OK, returnStudentIntent);
 
             }
@@ -290,11 +298,11 @@ public class CreateStudentActivity extends AppCompatActivity {
                         stringOfStudentRoll, stringOfStudentStandard,
                         stringOfStudentAge);
 
-                operationOnStudent = "addIt";
+                operationOnStudent = Constants.ADD_IT;
 
                 generateDialog(studentToAdd,operationOnStudent,null);
 
-                returnStudentIntent.putExtra("addedStudent", studentToAdd);
+                returnStudentIntent.putExtra(Constants.ADDEDSTUDENT, studentToAdd);
                 setResult(RESULT_OK, returnStudentIntent);
                 Toast.makeText(CreateStudentActivity.this, "Student Added", Toast.LENGTH_LONG).show();
 
@@ -331,9 +339,9 @@ public class CreateStudentActivity extends AppCompatActivity {
                     case useService:
                         Intent forService = new Intent(CreateStudentActivity.this,
                                 BackgroundService.class);
-                        forService.putExtra("studentForDb", studentToHandle);
-                        forService.putExtra("operation",operationOnStudent);
-                        forService.putExtra("oldIdOfStudent",oldIdOfStudent);
+                        forService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forService.putExtra(Constants.OPERATION,operationOnStudent);
+                        forService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         startService(forService);
                         //finish();
                         break;
@@ -341,9 +349,9 @@ public class CreateStudentActivity extends AppCompatActivity {
                     case useIntentService:
                         Intent forIntentService = new Intent(CreateStudentActivity.this,
                                 BackgroundIntentService.class);
-                        forIntentService.putExtra("studentForDb", studentToHandle);
-                        forIntentService.putExtra("operation",operationOnStudent);
-                        forIntentService.putExtra("oldIdOfStudent",oldIdOfStudent);
+                        forIntentService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
+                        forIntentService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         startService(forIntentService);
                         //finish();
                         break;

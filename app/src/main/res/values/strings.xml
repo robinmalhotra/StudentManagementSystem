@@ -34,4 +34,13 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="alertchoice">Choose from below</string>
+    <string name="viewitem">View</string>
+    <string name="edititem">Edit</string>
+    <string name="deleteitem">Delete</string>
+    <string name="standarderror">Standard should be between 1 - 12</string>
+    <string name="agetv">Age</string>
+    <string name="standardtv">Standard</string>
+    <string name="roll_notv">Roll No.</string>
+    <string name="nametv">Name</string>
 </resources>
