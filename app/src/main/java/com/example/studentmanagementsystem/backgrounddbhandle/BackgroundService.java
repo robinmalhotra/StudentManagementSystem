@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;

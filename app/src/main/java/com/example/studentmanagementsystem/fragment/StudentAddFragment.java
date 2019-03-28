@@ -367,8 +367,10 @@ public class StudentAddFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            long[] pattern = {0, 100, 1000, 300, 200, 100, 500, 200, 100};
+
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(100);
+            vibrator.vibrate(pattern,-1);
             Toast.makeText(context,"Broadcast Received",Toast.LENGTH_SHORT).show();
 
         }
