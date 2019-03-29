@@ -73,19 +73,17 @@ public class CreateStudentActivity extends AppCompatActivity {
         StudentTemplate catchStudent = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
 
-        //Link the EditText fields.
         EditText nameInput = findViewById(R.id.etStudentNameText);
         EditText rollInput = findViewById(R.id.etStudentRollNumberText);
         EditText standardInput = findViewById(R.id.etStudentStandardText);
         EditText ageInput = findViewById(R.id.etStudentAgeText);
 
-        //Set the visibility of the Buttons to be default.
+
         Button changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
         Button updateButton = findViewById(R.id.btnUpdateStudent);
         updateButton.setVisibility(TextView.INVISIBLE);
 
-        //To Edit the Student Details from Alert Dialog
         if (getIntent().hasExtra(Constants.THISISEDIT)) {
 
             nameInput.setText(catchStudent.getStudentTemplateName());
@@ -149,8 +147,6 @@ public class CreateStudentActivity extends AppCompatActivity {
         }
     }
 
-
-
     /** Updates the EditText fields to be enabled so User can update the student from the same
      *  activity and then goes invisible.
      *
@@ -193,15 +189,14 @@ public class CreateStudentActivity extends AppCompatActivity {
         updateButton.setVisibility(TextView.INVISIBLE);
         Button changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
-        //Declare the EditText refrences.
+
+
         EditText etNameInput;
         EditText etRollInput;
         EditText etStandardInput;
         EditText etAgeInput;
         String operationOnStudent;
 
-
-        //Connect the Edit Fields to the EditText refrences and set it Enabled.
         etNameInput = findViewById(R.id.etStudentNameText);
         etNameInput.setEnabled(true);
         etNameInput.setFocusable(true);
@@ -215,7 +210,6 @@ public class CreateStudentActivity extends AppCompatActivity {
         etAgeInput.setEnabled(true);
         etAgeInput.setFocusable(true);
 
-        //Get the strings that are typed in the EditText Fields.
         String stringOfStudentName = etNameInput.getText().toString();
         String stringOfStudentStandard = etStandardInput.getText().toString();
         String stringOfStudentRoll = etRollInput.getText().toString();
@@ -234,39 +228,48 @@ public class CreateStudentActivity extends AppCompatActivity {
             }
         }
 
-        //If Name has no length then show error and request focus.
         if (stringOfStudentName.length() == 0) {
             etNameInput.requestFocus();
             etNameInput.setError(getString(R.string.namecantbeempty));
         }
-        //if Name's range lies outside the Alphabetic Range, then show error and request focus.
         else if (!stringOfStudentName.matches(Constants.NAME_MATCH)) {
             etNameInput.requestFocus();
             etNameInput.setError(getString(R.string.enteralphabetsonly));
         }
-        //Check to see if the Roll number is within Range.
+
+        else if (stringOfStudentRoll.length() == 0) {
+            etRollInput.requestFocus();
+            etRollInput.setError(getString(R.string.rollerror));
+            etRollInput.setError(getString(R.string.rollerror));
+        }
         else if (intRoll < 1 || intRoll > ROLL_MAX) {
             etRollInput.requestFocus();
             etRollInput.setError(getString(R.string.valid_roll_error));
         }
-        //Check to see if the Roll Id already exists.
         else if(rollmatch) {
             etRollInput.requestFocus();
             etRollInput.setError(getString(R.string.rolliderror));
         }
-        //Standard should be between 1 to 12.
+        else if (stringOfStudentStandard.length() == 0) {
+            etStandardInput.requestFocus();
+            etStandardInput.setError("Standard cant be empty");
+        }
+
         else if (!stringOfStudentStandard.matches(Constants.STANDARD_MATCH)) {
             etStandardInput.requestFocus();
-            etStandardInput.setError(getString(R.string.standarderror));
+            etStandardInput.setError(getString(R.string.standarderror1));
         }
-        //Age should be between 7 to 18
+        else if (stringOfStudentAge.length() == 0) {
+            etAgeInput.requestFocus();
+            etAgeInput.setError("Age cant be empty");
+        }
+
         else if (!stringOfStudentAge.matches(Constants.AGE_MATCH)) {
             etAgeInput.requestFocus();
             etAgeInput.setError(getString(R.string.ageerror));
         }
 
-        //if All the validations are passed, then add the student or update the student based
-        // on user's choice.
+
         else {
 
             Intent checkIntent = getIntent();
@@ -292,8 +295,6 @@ public class CreateStudentActivity extends AppCompatActivity {
             }
             else {
 
-                //Create an object of Student with the values that we got from the Interface.
-
                 StudentTemplate studentToAdd = new StudentTemplate(stringOfStudentName,
                         stringOfStudentRoll, stringOfStudentStandard,
                         stringOfStudentAge);
@@ -304,7 +305,6 @@ public class CreateStudentActivity extends AppCompatActivity {
 
                 returnStudentIntent.putExtra(Constants.ADDEDSTUDENT, studentToAdd);
                 setResult(RESULT_OK, returnStudentIntent);
-                Toast.makeText(CreateStudentActivity.this, "Student Added", Toast.LENGTH_LONG).show();
 
             }
         }

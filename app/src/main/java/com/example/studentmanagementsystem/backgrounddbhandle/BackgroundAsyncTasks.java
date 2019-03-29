@@ -28,7 +28,13 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
         StudentTemplate studentForDb = (StudentTemplate) objects[0];
         String operationOnStudent = (String) objects[1];
-        String oldIdofStudent = (String) objects[2];
+        String oldIdofStudent = new String();
+
+
+        if(objects[2]!=null){
+            oldIdofStudent = (String) objects[2];
+        }
+
 
         StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
         switch (operationOnStudent){

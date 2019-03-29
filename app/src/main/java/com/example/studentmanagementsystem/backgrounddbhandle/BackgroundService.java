@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
@@ -12,7 +11,9 @@ import com.example.studentmanagementsystem.util.Constants;
 
 import static com.example.studentmanagementsystem.util.Constants.FILTER_ACTION_KEY;
 
-
+/**
+ *
+ */
 public class BackgroundService extends Service {
 
     public BackgroundService() {
@@ -55,7 +56,7 @@ public class BackgroundService extends Service {
         LocalBroadcastManager.getInstance(getApplicationContext()).
                 sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
 
-
+        stopSelf();
         return START_NOT_STICKY;
     }
     @Override

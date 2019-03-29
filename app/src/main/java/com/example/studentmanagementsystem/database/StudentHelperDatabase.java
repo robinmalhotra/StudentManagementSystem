@@ -3,23 +3,20 @@ package com.example.studentmanagementsystem.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Vibrator;
-import android.widget.Toast;
-
 
 import com.example.studentmanagementsystem.model.StudentTemplate;
+import com.example.studentmanagementsystem.util.Constants;
 
 import java.util.ArrayList;
 
 
 public class StudentHelperDatabase extends SQLiteOpenHelper {
 
-    private static final String STUDENT_DB = "student.db";
-    private static final String STUDENT_TABLE = "student_table";
+    private static final String STUDENT_DB = Constants.STUDENT_DB;
+    private static final String STUDENT_TABLE = Constants.STUDENT_TABLE;
     private static final int DATABASE_VERSION = 1;
 
     /* Declare Columns of the Table. */
@@ -33,9 +30,6 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
         super(context, STUDENT_DB, null, DATABASE_VERSION);
     }
-
-
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -54,14 +48,12 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
         db.execSQL(queryCreateDb);
 
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + STUDENT_TABLE);
         onCreate(db);
-
     }
 
     public void addStudentinDb (StudentTemplate student) throws SQLiteException {
@@ -73,9 +65,6 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
         values.put(COL_3_STUDENT_STANDARD, student.getStudentTemplateStandard());
         values.put(COL_4_STUDENT_AGE, student.getStudentTemplateAge());
         db.insert(STUDENT_TABLE, null, values);
-
-
-
 
         db.close();
     }
@@ -96,8 +85,6 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
     public boolean updateStudentInDb (StudentTemplate studentToUpdate, String oldRollId) throws SQLiteException {
 
-
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_2_STUDENT_NAME,studentToUpdate.getStudentTemplateName());
@@ -117,7 +104,6 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
             db.close();
             return false;
         }
-
 
     }
 
@@ -167,7 +153,7 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
                 studentToAdd.setStudentTemplateStandard(cursor.getString(cursor.getColumnIndex(COL_3_STUDENT_STANDARD)));
                 studentToAdd.setStudentTemplateAge(cursor.getString(cursor.getColumnIndex(COL_4_STUDENT_AGE)));
             }
-
+        cursor.close();
         return studentToAdd;
     }
 }

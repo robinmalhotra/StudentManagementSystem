@@ -35,7 +35,7 @@ import java.util.Collections;
 
 public class StudentActivity extends AppCompatActivity {
 
-    private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
+    private ArrayList<StudentTemplate> mStudentList = new ArrayList<>();
     private RecyclerView rvStudentList;
     private StudentAdapter adapter;
     private int POSITION_STUDENT;
@@ -52,7 +52,6 @@ public class StudentActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this);
 
-        //Set the Layout of Recyclerview to be linear. Default: Vertical.
         rvStudentList.setLayoutManager(linearLayoutManager);
         adapter = new StudentAdapter(this.mStudentList);
         rvStudentList.setAdapter(adapter);
@@ -82,7 +81,8 @@ public class StudentActivity extends AppCompatActivity {
             public void onItemClick(final int position) {//interface to implement onClick.
 
                 //Set the position based on the Viewholder selected by the listener.
-                setPositionStudent(position);
+
+                POSITION_STUDENT=position;
 
                 final String[] items = {getString(R.string.viewitem), getString(R.string.edititem),
                         getString(R.string.deleteitem)};
@@ -146,11 +146,71 @@ public class StudentActivity extends AppCompatActivity {
 
                     }
                 });
-                AlertDialog mAlert = builder.create();
-                mAlert.show();
+                //SORRY BROOO FOR THIS EVIL
+//                AlertDialog mAlert = builder.create();
+//                mAlert.show();
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //Setter Method for postion of student thats clicked on the recyclerview.
     protected void setPositionStudent(int position) {
@@ -161,12 +221,17 @@ public class StudentActivity extends AppCompatActivity {
         return this.POSITION_STUDENT;
     }
 
+
+    /**
+     *
+     * @param view
+     */
     //Creates an intent that requests for Student Object from the CreateStudentActivity Activity.
     public void addStudentButton(View view) {
 
         ArrayList<Integer> currentRollList;
         Intent i = new Intent(this, CreateStudentActivity.class);
-        //If there is any student in the list then send the rolls Id list.
+
         if(mStudentList.size()>0) {
             currentRollList=makeRollIdsList(mStudentList);
             i.putExtra("rollsList", currentRollList);
@@ -260,9 +325,10 @@ public class StudentActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-    //Creates a Roll Ids list out from the student list to make the Parcelable object light.
-    //@returns: String Array containing the List of Roll Numbers
-    //@params: ArrayList of Students;
+    /**Creates a Roll Ids list out from the student list to make the Parcelable object light.
+    *@returns: ArrayList<Integer>: String Array containing the List of Roll Numbers
+    *@params: ArrayList<StudentTemplate>: ArrayList of Students;
+     * */
     public ArrayList<Integer> makeRollIdsList(ArrayList<StudentTemplate> listForRolls) {
 
         int listSize= listForRolls.size();
@@ -322,7 +388,7 @@ public class StudentActivity extends AppCompatActivity {
                     case useAsyncTasks:
                         BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(StudentActivity.this);
 
-                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent);
+                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,null);
 
                         //startService(forIntentService);
                         break;

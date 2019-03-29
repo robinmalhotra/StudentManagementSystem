@@ -25,6 +25,9 @@ public class Constants {
     public static final String BROADCAST_MESSAGE = "broadcastMessage";
     public static final String ROLLSLIST = "rollsList";
 
+    public static final String STUDENT_DB = "student.db";
+    public static final String STUDENT_TABLE = "student_table";
+
 
     public static final String STUDENT_LIST_FROM_MAIN = "studentlistfrommain";
     public static final String VIEW_NAME = "viewname";
