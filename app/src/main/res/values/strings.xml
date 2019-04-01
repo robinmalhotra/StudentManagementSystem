@@ -45,4 +45,7 @@
     <string name="nametv">Name</string>
     <string name="standarderror1">Standard should be between 1 - 12</string>
     <string name="rollerror">Roll No. cant be empty</string>
+    <string name="namevalidstring">Enter Valid Name</string>
+    <string name="rollvalidstring">Enter Valid Roll</string>
+    <string name="uniquerollstring">Roll Id already exists</string>
 </resources>

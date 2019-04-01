@@ -13,6 +13,9 @@ import com.example.studentmanagementsystem.util.Constants;
 
 import static com.example.studentmanagementsystem.util.Constants.FILTER_ACTION_KEY;
 
+/**
+ * Background class to handle the database through IntentService.
+ */
 
 public class BackgroundIntentService extends IntentService {
     /**
@@ -27,38 +30,11 @@ public class BackgroundIntentService extends IntentService {
     public BackgroundIntentService() {
         super("nothing");
     }
+    private HandleBackground handleBackground = new HandleBackground();
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        StudentHelperDatabase databaseHelper = new StudentHelperDatabase(this);
-        databaseHelper.getWritableDatabase();
-        String oldIdofStudent = new String();
-
-        if(intent.hasExtra(Constants.OLD_ID_OF_STUDENT)) {
-            oldIdofStudent = intent.getStringExtra(Constants.OLD_ID_OF_STUDENT);
-        }
-        String operationOnStudent = intent.getStringExtra(Constants.OPERATION);
-
-        StudentTemplate studentForDb = intent.getParcelableExtra(Constants.STUDENT_FOR_DB);
-
-
-        switch (operationOnStudent) {
-            case Constants.ADD_IT:
-                databaseHelper.addStudentinDb(studentForDb);
-
-                break;
-            case Constants.UPDATE_IT:
-                databaseHelper.updateStudentInDb(studentForDb,oldIdofStudent);
-                break;
-            case Constants.DELETE_IT:
-
-                databaseHelper.deleteStudentInDb(studentForDb);
-                break;
-        }
-        intent.setAction(FILTER_ACTION_KEY);
-        String echoMessage = Constants.BROADCAST ;
-        LocalBroadcastManager.getInstance(getApplicationContext()).
-                sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
+        handleBackground.handleDb(intent,this);
 
 
 

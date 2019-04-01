@@ -24,6 +24,7 @@ import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTas
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
+import com.example.studentmanagementsystem.listener.RecyclerViewOnClickListener;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
 import com.example.studentmanagementsystem.util.SortByName;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class StudentActivity extends AppCompatActivity {
+public class StudentListActivity extends AppCompatActivity implements RecyclerViewOnClickListener {
 
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<>();
     private RecyclerView rvStudentList;
@@ -44,6 +45,11 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+
+    }
+
+    private void init(){
         StudentHelperDatabase studentHelperDatabase = new StudentHelperDatabase(this);
         studentHelperDatabase.getWritableDatabase();
 
@@ -53,188 +59,80 @@ public class StudentActivity extends AppCompatActivity {
                 new LinearLayoutManager(this);
 
         rvStudentList.setLayoutManager(linearLayoutManager);
-        adapter = new StudentAdapter(this.mStudentList);
+        adapter = new StudentAdapter(mStudentList, this);
         rvStudentList.setAdapter(adapter);
 
-        //Adapter has a listener interface implemented.
-        handleDialog(adapter);
 
         /** Check if the List is empty, if it is then get the list from the local Database.
          *
-        */
+         */
         if(mStudentList.size()<1) {
 
             mStudentList.addAll(studentHelperDatabase.refreshStudentListfromDb());
 
         }
-
     }
 
 
-    /** Shows Alert Dialog when the Student in the list is clicked and gives option to View, Edit
-     * or Delete the student.
-     * @param adapter
-     */
-    protected void handleDialog(final StudentAdapter adapter) {
-        adapter.setOnItemClickListener(new StudentAdapter.onItemClickListener() {
+
+
+    private void viewStudentIntentPasser(StudentTemplate student) {
+        Intent forView = new Intent(StudentListActivity.this,
+                CreateStudentActivity.class);
+        forView.putExtra(Constants.THISSTUDENT, student);
+        forView.putExtra(Constants.THISISVIEW, 101);
+        startActivityForResult(forView, Constants.CODE_TO_VIEW_STUDENT);
+
+    }
+
+    private void editStudentIntentPasser(StudentTemplate student) {
+
+        Intent forEdit = new Intent(StudentListActivity.this,
+                CreateStudentActivity.class);
+        forEdit.putExtra(Constants.THISSTUDENT, student);
+        forEdit.putExtra(Constants.THISISEDIT, 102);
+        startActivityForResult(forEdit, Constants.CODE_TO_EDIT_STUDENT);
+
+    }
+
+    private void deleteStudentFromDb(final int position) {
+        final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(StudentListActivity.this);
+        deleteDialog.setTitle(R.string.deletetitle);
+        deleteDialog.setMessage(R.string.want_to_delete_or_not);
+        deleteDialog.setPositiveButton(R.string.deleteconfirm, new DialogInterface.OnClickListener() {
             @Override
-            public void onItemClick(final int position) {//interface to implement onClick.
+            public void onClick(DialogInterface dialog, int which) {
 
-                //Set the position based on the Viewholder selected by the listener.
+                String operationOnStudent = Constants.DELETE_IT;
+                generateDialog(mStudentList.get(position),operationOnStudent);
+                mStudentList.remove(position);
 
-                POSITION_STUDENT=position;
-
-                final String[] items = {getString(R.string.viewitem), getString(R.string.edititem),
-                        getString(R.string.deleteitem)};
-                final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
-
-                //Alert Dialog that has context of this activity.
-                AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
-                builder.setTitle(R.string.alertchoice);
-                final StudentTemplate whichStudent = mStudentList.get(position);
-                //Sets the items of the Dialog.
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-
-                        switch (which) {
-                            case viewStudent:
-                                //Send the intent if the User chooses the VIEW option.
-                                Intent forView = new Intent(StudentActivity.this,
-                                        CreateStudentActivity.class);
-                                forView.putExtra(Constants.THISSTUDENT, whichStudent);
-                                forView.putExtra(Constants.THISISVIEW, 101);
-                                startActivityForResult(forView, Constants.CODE_TO_VIEW_STUDENT);
-
-                                break;
-
-                            //Send the intent if the User choses the EDIT option.
-                            case editStudent:
-                                Intent forEdit = new Intent(StudentActivity.this,
-                                        CreateStudentActivity.class);
-                                forEdit.putExtra(Constants.THISSTUDENT, whichStudent);
-                                forEdit.putExtra(Constants.THISISEDIT, 102);
-                                startActivityForResult(forEdit, Constants.CODE_TO_EDIT_STUDENT);
-
-                                break;
-                            //Delete the Student.
-                            case deleteStudent:
-                                final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(StudentActivity.this);
-                                deleteDialog.setTitle(R.string.deletetitle);
-                                deleteDialog.setMessage(R.string.want_to_delete_or_not);
-                                deleteDialog.setPositiveButton(R.string.deleteconfirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                        String operationOnStudent = Constants.DELETE_IT;
-                                        generateDialog(mStudentList.get(position),operationOnStudent);
-                                        mStudentList.remove(position);
-
-                                    }
-                                });
-                                deleteDialog.setNegativeButton(R.string.deletecancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                deleteDialog.show();
-                                break;
-                        }
-
-                    }
-                });
-                //SORRY BROOO FOR THIS EVIL
-//                AlertDialog mAlert = builder.create();
-//                mAlert.show();
             }
         });
+        deleteDialog.setNegativeButton(R.string.deletecancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.show();
+
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Setter Method for postion of student thats clicked on the recyclerview.
-    protected void setPositionStudent(int position) {
-        POSITION_STUDENT = position;
-    }
-
-    protected int getPositionStudent() {
-        return this.POSITION_STUDENT;
-    }
-
-
-    /**
+    /**Opens the next activity to add, edit or view Student.
+     * Passes the RollsList for Validation.
      *
      * @param view
      */
     //Creates an intent that requests for Student Object from the CreateStudentActivity Activity.
-    public void addStudentButton(View view) {
+    public void addStudentButtonOnClickListener(View view) {
 
         ArrayList<Integer> currentRollList;
         Intent i = new Intent(this, CreateStudentActivity.class);
 
         if(mStudentList.size()>0) {
             currentRollList=makeRollIdsList(mStudentList);
-            i.putExtra("rollsList", currentRollList);
+            i.putExtra(Constants.ROLLSLIST, currentRollList);
         }
         startActivityForResult(i, Constants.CODE_TO_ADD_STUDENT);
     }
@@ -252,7 +150,7 @@ public class StudentActivity extends AppCompatActivity {
             //Check to see if the Student returned is to be updated.
             if(requestCode==Constants.CODE_TO_VIEW_STUDENT||requestCode==Constants.CODE_TO_EDIT_STUDENT) {
 
-                int pos=getPositionStudent();
+                int pos=POSITION_STUDENT;
                 assert data != null;
                 studentManipulate=data.getParcelableExtra(Constants.UPDATEDSTUDENT);
                 mStudentList.get(pos).setStudentTemplateName(studentManipulate.getStudentTemplateName());
@@ -292,7 +190,7 @@ public class StudentActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Collections.sort(mStudentList, new SortByName());
                 adapter.notifyDataSetChanged();
-                Toast.makeText(StudentActivity.this, getString(R.string.sortbyname), Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentListActivity.this, getString(R.string.sortbyname), Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -303,7 +201,7 @@ public class StudentActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Collections.sort(mStudentList, (new SortByRoll()));
                 adapter.notifyDataSetChanged();
-                Toast.makeText(StudentActivity.this, getString(R.string.sortbyroll), Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentListActivity.this, getString(R.string.sortbyroll), Toast.LENGTH_LONG).show();
                 return true;
 
             }
@@ -316,15 +214,17 @@ public class StudentActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    rvStudentList.setLayoutManager(new GridLayoutManager(StudentActivity.this, 2));
+                    rvStudentList.setLayoutManager(new GridLayoutManager(StudentListActivity.this, 2));
                 } else {
-                    rvStudentList.setLayoutManager(new LinearLayoutManager(StudentActivity.this));
+                    rvStudentList.setLayoutManager(new LinearLayoutManager(StudentListActivity.this));
                 }
             }
         });
 
         return super.onCreateOptionsMenu(menu);
     }
+
+
     /**Creates a Roll Ids list out from the student list to make the Parcelable object light.
     *@returns: ArrayList<Integer>: String Array containing the List of Roll Numbers
     *@params: ArrayList<StudentTemplate>: ArrayList of Students;
@@ -354,7 +254,7 @@ public class StudentActivity extends AppCompatActivity {
         final int useService = 0, useIntentService = 1, useAsyncTasks = 2;
 
         //Alert Dialog that has context of this activity.
-        AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(StudentListActivity.this);
         builder.setTitle(R.string.userchoice_dbhandle_alert);
         //Sets the items of the Dialog.
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -367,7 +267,7 @@ public class StudentActivity extends AppCompatActivity {
                     case useService:
 
                         //Send the intent if the User chooses the VIEW option.
-                        Intent forService = new Intent(StudentActivity.this,
+                        Intent forService = new Intent(StudentListActivity.this,
                                 BackgroundService.class);
                         forService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
                         forService.putExtra(Constants.OPERATION,operationOnStudent);
@@ -377,7 +277,7 @@ public class StudentActivity extends AppCompatActivity {
                     //Send the intent if the User choses the EDIT option.
                     case useIntentService:
 
-                        Intent forIntentService = new Intent(StudentActivity.this,
+                        Intent forIntentService = new Intent(StudentListActivity.this,
                                 BackgroundIntentService.class);
                         forIntentService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
                         forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
@@ -386,7 +286,7 @@ public class StudentActivity extends AppCompatActivity {
                         break;
                     //Delete the Student.
                     case useAsyncTasks:
-                        BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(StudentActivity.this);
+                        BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(StudentListActivity.this);
 
                         backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,null);
 
@@ -403,5 +303,57 @@ public class StudentActivity extends AppCompatActivity {
         mAlert.show();
 
     }
+
+    /**
+     * When the item in the recycler view is clicked, we open a dialog box that makes user select
+     * between View, Edit or Delete for that particular Student.
+     * @param position is the position of the student selected in the list.
+     */
+
+    @Override
+    public void onItemClick(final int position) {
+        //Set the position based on the Viewholder selected by the listener.
+
+        POSITION_STUDENT=position;
+
+        final String[] items = {getString(R.string.viewitem), getString(R.string.edititem),
+                getString(R.string.deleteitem)};
+        final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
+
+        //Alert Dialog that has context of this activity.
+        AlertDialog.Builder builder = new AlertDialog.Builder(StudentListActivity.this);
+        builder.setTitle(R.string.alertchoice);
+        final StudentTemplate whichStudent = mStudentList.get(position);
+        //Sets the items of the Dialog.
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+                switch (which) {
+                    case viewStudent:
+
+                        viewStudentIntentPasser(whichStudent);
+
+                        break;
+
+                    case editStudent:
+
+                        editStudentIntentPasser(whichStudent);
+
+                        break;
+                    //Delete the Student.
+                    case deleteStudent:
+                        deleteStudentFromDb(position);
+                        break;
+                }
+
+            }
+        });
+        AlertDialog mAlert = builder.create();
+        mAlert.show();
+    }
+
 
 }

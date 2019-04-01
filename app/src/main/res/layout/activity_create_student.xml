@@ -137,7 +137,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etStudentAgeText"
         android:layout_marginTop="@dimen/marginbutton"
-        android:onClick="updateStudentButton"
+        android:onClick="updateStudentButtonClickListener"
         android:text="@string/update_student_button"
         android:visibility="visible"
         android:background="@color/colorPrimary"/>

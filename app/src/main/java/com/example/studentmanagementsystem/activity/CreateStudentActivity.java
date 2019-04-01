@@ -1,11 +1,8 @@
 package com.example.studentmanagementsystem.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,27 +11,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.studentmanagementsystem.R;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
+import com.example.studentmanagementsystem.broadcastreceiver.StudentBroadcastReceiver;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
+import com.example.studentmanagementsystem.validator.Validator;
 
 import java.util.ArrayList;
 
 
 public class CreateStudentActivity extends AppCompatActivity {
     private Intent holdIntent;
-    private static final int ROLL_MAX = 1000;
     private StudentHelperDatabase studentHelperDatabase;
     private String oldIdOfStudent;
-    private Context context;
+    private EditText etNameInput, etRollInput, etStandardInput, etAgeInput;
+    private TextView changeText, showText;
+    private Button changeButton, updateButton;
 
-    StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
+    private StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver(this);
 
     @Override
     protected void onStart() {
@@ -54,57 +53,64 @@ public class CreateStudentActivity extends AppCompatActivity {
     }
 
 
-    public String getOldIdOfStudent() {
-        return oldIdOfStudent;
-    }
-
-    public void setOldIdOfStudent(String oldIdOfStudent) {
-        this.oldIdOfStudent = oldIdOfStudent;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_student);
+
+        init();
+        setUpEditMode();
+        setUpViewMode();
+
+    }
+
+    /**
+     * Initialise components
+     */
+    private void init() {
         holdIntent = getIntent();
 
         studentHelperDatabase = new StudentHelperDatabase(this);
 
-        StudentTemplate catchStudent = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
+        etNameInput = findViewById(R.id.etStudentNameText);
+        etRollInput = findViewById(R.id.etStudentRollNumberText);
+        etStandardInput = findViewById(R.id.etStudentStandardText);
+        etAgeInput = findViewById(R.id.etStudentAgeText);
 
 
-        EditText nameInput = findViewById(R.id.etStudentNameText);
-        EditText rollInput = findViewById(R.id.etStudentRollNumberText);
-        EditText standardInput = findViewById(R.id.etStudentStandardText);
-        EditText ageInput = findViewById(R.id.etStudentAgeText);
-
-
-        Button changeButton = findViewById(R.id.btnSaveStudent);
+        changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
-        Button updateButton = findViewById(R.id.btnUpdateStudent);
+        updateButton = findViewById(R.id.btnUpdateStudent);
         updateButton.setVisibility(TextView.INVISIBLE);
+    }
 
+    /**
+     * Set the Activity to for Edit mode.
+     */
+    private void setUpEditMode(){
         if (getIntent().hasExtra(Constants.THISISEDIT)) {
 
-            nameInput.setText(catchStudent.getStudentTemplateName());
-            nameInput.setEnabled(true);
+            StudentTemplate catchStudent = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
-            rollInput.setText(catchStudent.getStudentTemplateRoll());
-            rollInput.setEnabled(true);
+            etNameInput.setText(catchStudent.getStudentTemplateName());
+            etNameInput.setEnabled(true);
 
-            standardInput.setText(catchStudent.getStudentTemplateStandard());
-            standardInput.setEnabled(true);
+            etRollInput.setText(catchStudent.getStudentTemplateRoll());
+            etRollInput.setEnabled(true);
 
-            ageInput.setText(catchStudent.getStudentTemplateAge());
-            ageInput.setEnabled(true);
+            etStandardInput.setText(catchStudent.getStudentTemplateStandard());
+            etStandardInput.setEnabled(true);
 
-            TextView changeText = (TextView) findViewById(R.id.tvAddStudentDetails);
+            etAgeInput.setText(catchStudent.getStudentTemplateAge());
+            etAgeInput.setEnabled(true);
+
+            changeText =  findViewById(R.id.tvAddStudentDetails);
             changeText.setVisibility(TextView.INVISIBLE);
 
-            TextView showText = (TextView) findViewById(R.id.tvStudentDetails);
+            showText =  findViewById(R.id.tvStudentDetails);
             showText.setVisibility(TextView.VISIBLE);
 
-            changeButton.setText(getString(R.string.update_student));
+            changeButton.setText(Constants.UPDATE_STUDENT_DETAILS);
 
             changeButton = findViewById(R.id.btnSaveStudent);
             changeButton.setVisibility(TextView.VISIBLE);
@@ -113,29 +119,31 @@ public class CreateStudentActivity extends AppCompatActivity {
             updateButton.setVisibility(TextView.INVISIBLE);
 
         }
+    }
 
-
-        /** To View the Student Details only. This sets the EditText fields disabled so user cant
-         *   change it.
-         */
+    /**
+     * Setup the activity for View Mode.
+     */
+    private void setUpViewMode() {
         if (getIntent().hasExtra(Constants.THISISVIEW)) {
+            StudentTemplate catchStudent = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
-            nameInput.setText(catchStudent.getStudentTemplateName());
-            nameInput.setEnabled(false);
+            etNameInput.setText(catchStudent.getStudentTemplateName());
+            etNameInput.setEnabled(false);
 
-            rollInput.setText(catchStudent.getStudentTemplateRoll());
-            rollInput.setEnabled(false);
+            etRollInput.setText(catchStudent.getStudentTemplateRoll());
+            etRollInput.setEnabled(false);
 
-            standardInput.setText(catchStudent.getStudentTemplateStandard());
-            standardInput.setEnabled(false);
+            etStandardInput.setText(catchStudent.getStudentTemplateStandard());
+            etStandardInput.setEnabled(false);
 
-            ageInput.setText(catchStudent.getStudentTemplateAge());
-            ageInput.setEnabled(false);
+            etAgeInput.setText(catchStudent.getStudentTemplateAge());
+            etAgeInput.setEnabled(false);
 
-            TextView changeText = findViewById(R.id.tvAddStudentDetails);
+            changeText = findViewById(R.id.tvAddStudentDetails);
             changeText.setVisibility(TextView.INVISIBLE);
 
-            TextView showText = findViewById(R.id.tvStudentDetails);
+            showText = findViewById(R.id.tvStudentDetails);
             showText.setVisibility(TextView.VISIBLE);
 
             changeButton = findViewById(R.id.btnSaveStudent);
@@ -152,29 +160,19 @@ public class CreateStudentActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void updateStudentButton(View view) {
-        EditText nameInput = findViewById(R.id.etStudentNameText);
-        nameInput.setEnabled(true);
-        nameInput.setFocusable(true);
-        EditText rollInput = findViewById(R.id.etStudentRollNumberText);
-        rollInput.setEnabled(true);
-        rollInput.setFocusable(true);
-        EditText standardInput = findViewById(R.id.etStudentStandardText);
-        standardInput.setEnabled(true);
-        standardInput.setFocusable(true);
-        EditText ageInput = findViewById(R.id.etStudentAgeText);
-        ageInput.setEnabled(true);
-        ageInput.setFocusable(true);
-
+    public void updateStudentButtonClickListener(View view) {
+        etNameInput.setEnabled(true);
+        etNameInput.setFocusable(true);
+        etRollInput.setEnabled(true);
+        etRollInput.setFocusable(true);
+        etStandardInput.setEnabled(true);
+        etStandardInput.setFocusable(true);
+        etAgeInput.setEnabled(true);
+        etAgeInput.setFocusable(true);
         StudentTemplate holdStudent = getIntent().getParcelableExtra(Constants.THISSTUDENT);
-
-        setOldIdOfStudent(holdStudent.getStudentTemplateRoll());
-
-        Button changeButton = findViewById(R.id.btnSaveStudent);
+        oldIdOfStudent = holdStudent.getStudentTemplateRoll();
         changeButton.setVisibility(TextView.VISIBLE);
-        Button updateButton = findViewById(R.id.btnUpdateStudent);
         updateButton.setVisibility(TextView.INVISIBLE);
-
     }
 
     /**Creates the student object that is sent to the main activity for either adding or updating.
@@ -184,29 +182,17 @@ public class CreateStudentActivity extends AppCompatActivity {
     public void addStudentButton(View view) {
 
         studentHelperDatabase = new StudentHelperDatabase(this);
-
-        Button updateButton = findViewById(R.id.btnUpdateStudent);
         updateButton.setVisibility(TextView.INVISIBLE);
-        Button changeButton = findViewById(R.id.btnSaveStudent);
         changeButton.setVisibility(TextView.VISIBLE);
 
-
-        EditText etNameInput;
-        EditText etRollInput;
-        EditText etStandardInput;
-        EditText etAgeInput;
         String operationOnStudent;
 
-        etNameInput = findViewById(R.id.etStudentNameText);
         etNameInput.setEnabled(true);
         etNameInput.setFocusable(true);
-        etRollInput = findViewById(R.id.etStudentRollNumberText);
         etRollInput.setEnabled(true);
         etRollInput.setFocusable(true);
-        etStandardInput = findViewById(R.id.etStudentStandardText);
         etStandardInput.setEnabled(true);
         etStandardInput.setFocusable(true);
-        etAgeInput = findViewById(R.id.etStudentAgeText);
         etAgeInput.setEnabled(true);
         etAgeInput.setFocusable(true);
 
@@ -218,7 +204,6 @@ public class CreateStudentActivity extends AppCompatActivity {
 
         boolean rollmatch=false;
 
-        //Changes the boolean rollmatch to true and true means we would check for the validation.
         if(holdIntent.hasExtra(Constants.ROLLSLIST)){
             ArrayList<Integer> thisRollsList=holdIntent.getIntegerArrayListExtra(Constants.ROLLSLIST);
             for(Integer thisRoll:thisRollsList) {
@@ -228,47 +213,20 @@ public class CreateStudentActivity extends AppCompatActivity {
             }
         }
 
-        if (stringOfStudentName.length() == 0) {
+        if (!Validator.isValidName(stringOfStudentName.trim())) {
             etNameInput.requestFocus();
-            etNameInput.setError(getString(R.string.namecantbeempty));
+            etNameInput.setError(getString(R.string.namevalidstring));
         }
-        else if (!stringOfStudentName.matches(Constants.NAME_MATCH)) {
-            etNameInput.requestFocus();
-            etNameInput.setError(getString(R.string.enteralphabetsonly));
-        }
-
-        else if (stringOfStudentRoll.length() == 0) {
+        //to check if the the entered roll number is in valid format
+        else if (!Validator.isValidRollNo(stringOfStudentRoll.trim())) {
             etRollInput.requestFocus();
-            etRollInput.setError(getString(R.string.rollerror));
-            etRollInput.setError(getString(R.string.rollerror));
+            etRollInput.setError(getString(R.string.rollvalidstring));
         }
-        else if (intRoll < 1 || intRoll > ROLL_MAX) {
+
+        else if (rollmatch) {
             etRollInput.requestFocus();
-            etRollInput.setError(getString(R.string.valid_roll_error));
+            etRollInput.setError(getString(R.string.uniquerollstring));
         }
-        else if(rollmatch) {
-            etRollInput.requestFocus();
-            etRollInput.setError(getString(R.string.rolliderror));
-        }
-        else if (stringOfStudentStandard.length() == 0) {
-            etStandardInput.requestFocus();
-            etStandardInput.setError("Standard cant be empty");
-        }
-
-        else if (!stringOfStudentStandard.matches(Constants.STANDARD_MATCH)) {
-            etStandardInput.requestFocus();
-            etStandardInput.setError(getString(R.string.standarderror1));
-        }
-        else if (stringOfStudentAge.length() == 0) {
-            etAgeInput.requestFocus();
-            etAgeInput.setError("Age cant be empty");
-        }
-
-        else if (!stringOfStudentAge.matches(Constants.AGE_MATCH)) {
-            etAgeInput.requestFocus();
-            etAgeInput.setError(getString(R.string.ageerror));
-        }
-
 
         else {
 
@@ -280,7 +238,7 @@ public class CreateStudentActivity extends AppCompatActivity {
 
                 StudentTemplate studentToUpdate = holdIntent.getParcelableExtra(Constants.THISSTUDENT);
 
-                setOldIdOfStudent(studentToUpdate.getStudentTemplateRoll());
+                oldIdOfStudent = studentToUpdate.getStudentTemplateRoll();
                 studentToUpdate.setStudentTemplateName(stringOfStudentName);
                 studentToUpdate.setStudentTemplateRoll(stringOfStudentRoll);
                 studentToUpdate.setStudentTemplateStandard(stringOfStudentStandard);
@@ -288,7 +246,7 @@ public class CreateStudentActivity extends AppCompatActivity {
 
                 operationOnStudent=Constants.UPDATE_IT;
 
-                generateDialog(studentToUpdate,operationOnStudent,getOldIdOfStudent());
+                generateDialog(studentToUpdate,operationOnStudent,oldIdOfStudent);
                 returnStudentIntent.putExtra(Constants.UPDATEDSTUDENT, studentToUpdate);
                 setResult(RESULT_OK, returnStudentIntent);
 
@@ -343,7 +301,7 @@ public class CreateStudentActivity extends AppCompatActivity {
                         forService.putExtra(Constants.OPERATION,operationOnStudent);
                         forService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         startService(forService);
-                        //finish();
+
                         break;
 
                     case useIntentService:
@@ -353,7 +311,7 @@ public class CreateStudentActivity extends AppCompatActivity {
                         forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
                         forIntentService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         startService(forIntentService);
-                        //finish();
+
                         break;
 
                     case useAsyncTasks:
@@ -371,21 +329,7 @@ public class CreateStudentActivity extends AppCompatActivity {
 
     }
 
-    /**Inner broadcast receiver that receives the broadcast if the services have indeed added the elements
-     * in the database.
-     */
-    public class StudentBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            finish();
-
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(500);
-            Toast.makeText(CreateStudentActivity.this,"Broadcast Received",Toast.LENGTH_SHORT).show();
-
-        }
-    }
 
 
 }

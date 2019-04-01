@@ -10,6 +10,10 @@ import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
 
+/**
+ * Class to handle The Database through AsyncTasks.
+ */
+
 public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
     @SuppressLint("StaticFieldLeak")
@@ -34,7 +38,6 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
         if(objects[2]!=null){
             oldIdofStudent = (String) objects[2];
         }
-
 
         StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
         switch (operationOnStudent){
