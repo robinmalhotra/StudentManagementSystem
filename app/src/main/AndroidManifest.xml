@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.CreateStudentActivity" />
-        <activity android:name=".activity.StudentActivity">
+        <activity android:name=".activity.StudentListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

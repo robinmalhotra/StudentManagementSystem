@@ -22,13 +22,10 @@ import com.example.studentmanagementsystem.adapter.StudentFragmentAdapter;
 import com.example.studentmanagementsystem.communicator.Communicator;
 import com.example.studentmanagementsystem.fragment.StudentAddFragment;
 import com.example.studentmanagementsystem.fragment.StudentListFragment;
-import com.example.studentmanagementsystem.util.SortByName;
-import com.example.studentmanagementsystem.util.SortByRoll;
-
-import java.util.Collections;
 
 
-public class StudentActivity extends AppCompatActivity implements Communicator {
+
+class StudentListActivity extends AppCompatActivity implements Communicator {
 
 
     private ViewPager viewPager;
@@ -39,7 +36,10 @@ public class StudentActivity extends AppCompatActivity implements Communicator {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+    }
 
+    private void init(){
         viewPager = findViewById(R.id.view_pager);
         fragmentAdapter = new StudentFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentAdapter);
@@ -47,32 +47,6 @@ public class StudentActivity extends AppCompatActivity implements Communicator {
         //to add tabLayout in view pager
         TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-
-
-//  }
-//    private void clearNextFragment(){
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int i, float v, int i1) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int i) {
-//
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int i) {
-//                String tag =getString(R.string.tag)+R.id.view_pager+":"+1;
-//                StudentAddFragment addStudentFragment = (StudentAddFragment) getSupportFragmentManager().findFragmentByTag(tag);
-//              if(addStudentFragment!=null){
-//                          addStudentFragment.clearDetails();
-//                      }
-//
-//            }
-//        });
-//    }
     }
 
     public void changeTab(){

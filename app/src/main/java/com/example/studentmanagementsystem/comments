@@ -4,3 +4,21 @@ textsize must be in sp)-3
 
 Modularity:(needs to separate the code in methods.
 
+
+
+Validation class should be different not multiple if else ,
+GetAdapter position should be used in adapter and ItemView On click should be used in onBindViewHolder,
+If code is same in 2 case, you should make one method for that(View student and Edit student).No need to use extra setters and getters to set position in same class like student activity
+Code separation is not there in onCreate of a class, init functions not used
+EditText should not be init more than one times in same class
+No red warning in manifest file like wrong redirections of classes and broadcast
+
+EditText should not be init more than one times in same class
+Code separation is not there in onCreate of a class, init functions not used
+If code is written more than one time create a function of that
+No need to use extra setters and getters to set position in same class like student activity
+Constants should be in constant class and Constant file should be interface
+
+Param should be mention in function comments
+Unused comment should be removed
+Error messages should be correct
