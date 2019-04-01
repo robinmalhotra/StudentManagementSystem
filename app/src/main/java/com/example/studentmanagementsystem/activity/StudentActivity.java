@@ -146,73 +146,15 @@ public class StudentActivity extends AppCompatActivity {
 
                     }
                 });
-                //SORRY BROOO FOR THIS EVIL
-//                AlertDialog mAlert = builder.create();
-//                mAlert.show();
+                AlertDialog mAlert = builder.create();
+                mAlert.show();
             }
         });
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Setter Method for postion of student thats clicked on the recyclerview.
+    /**Setter Method for postion of student thats clicked on the recyclerview.
+    */
     protected void setPositionStudent(int position) {
         POSITION_STUDENT = position;
     }
