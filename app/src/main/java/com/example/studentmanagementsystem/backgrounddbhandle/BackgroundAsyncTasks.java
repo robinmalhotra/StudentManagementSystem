@@ -33,7 +33,6 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
         if(objects[2]!=null){
             oldIdofStudent = (String) objects[2];
-            Log.d("yyyyyy", "doInBackground: "+ oldIdofStudent);
         }
 
 

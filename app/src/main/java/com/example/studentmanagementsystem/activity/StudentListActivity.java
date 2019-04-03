@@ -43,8 +43,6 @@ class StudentListActivity extends AppCompatActivity implements Communicator {
         viewPager = findViewById(R.id.view_pager);
         fragmentAdapter = new StudentFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentAdapter);
-
-        //to add tabLayout in view pager
         TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -62,6 +60,7 @@ class StudentListActivity extends AppCompatActivity implements Communicator {
 
         String tag =getString(R.string.tag)+R.id.view_pager+":"+0;
         StudentListFragment studentListFragment = (StudentListFragment) getSupportFragmentManager().findFragmentByTag(tag);
+        assert studentListFragment != null;
         studentListFragment.addStudent(bundle);
         changeTab();
     }
@@ -70,6 +69,7 @@ class StudentListActivity extends AppCompatActivity implements Communicator {
     public void communicateUpdate(Bundle bundle) {
         String tag =getString(R.string.tag)+R.id.view_pager+":"+1;
         StudentAddFragment addStudentFragment = (StudentAddFragment) getSupportFragmentManager().findFragmentByTag(tag);
+        assert addStudentFragment != null;
         addStudentFragment.updateStudent(bundle);
         changeTab();
     }

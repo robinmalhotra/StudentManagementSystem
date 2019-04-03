@@ -26,6 +26,7 @@ import com.example.studentmanagementsystem.activity.CreateStudentActivity;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundAsyncTasks;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentService;
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
+import com.example.studentmanagementsystem.broadcastreceiver.StudentBroadcastReceiver;
 import com.example.studentmanagementsystem.communicator.Communicator;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
@@ -86,14 +87,13 @@ public class StudentAddFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_add_student,container,false);
-        // Inflate the layout for this fragment
         init(view);
         return view;
     }
 
     /**
      * Initialise components.
-     * @param view
+     * @param view fragment view from XML.
      */
     public void init(View view) {
          etStudentName = view.findViewById(R.id.etStudentNameText);
@@ -135,7 +135,6 @@ public class StudentAddFragment extends Fragment {
 
             //Set the Edittext fields as per the student that needs to be updated.
             etStudentName.setText(studentTemplate.getStudentTemplateName());
-            Log.d("yyyyyy", "updateStudent: " + studentTemplate.getStudentTemplateName());
             etStudentRoll.setText(studentTemplate.getStudentTemplateRoll());
             etStudentStandard.setText(studentTemplate.getStudentTemplateStandard());
             etStudentAge.setText(studentTemplate.getStudentTemplateAge());
@@ -156,7 +155,7 @@ public class StudentAddFragment extends Fragment {
 
     /**
      * For the Activity that only shows the Student Details.
-      * @param student
+      * @param student selected from the previous fragment's on touch.
      */
     public void viewMode(StudentTemplate student){
 
@@ -181,7 +180,7 @@ public class StudentAddFragment extends Fragment {
      */
     @SuppressLint("SetTextI18n")
     public void editMode() {
-        getActivity().setTitle(R.string.editstudenttitle);
+        getActivity().setTitle("Edit Student Details");
         tvStudentDetails.setText(Constants.UPDATE_STUDENT_DETAILS);
         etStudentRoll.setEnabled(false);
         mAddStudentButton.setText(Constants.UPDATE_STUDENT_DETAILS);
@@ -204,7 +203,6 @@ public class StudentAddFragment extends Fragment {
 
                 else{
                     String name = etStudentName.getText().toString().trim();
-                    Log.d("yyyyyy", "onClick: "+name);
                     String roll = etStudentRoll.getText().toString().trim();
                     String standard = etStudentStandard.getText().toString().trim();
                     String age = etStudentAge.getText().toString().trim();
@@ -256,21 +254,21 @@ public class StudentAddFragment extends Fragment {
                     case useService:
                         Intent forService = new Intent(mContext,
                                 BackgroundService.class);
-                        forService.putExtra("studentForDb", studentToHandle);
-                        forService.putExtra("operation",operationOnStudent);
-                        forService.putExtra("oldIdOfStudent",oldIdOfStudent);
+                        forService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forService.putExtra(Constants.OPERATION,operationOnStudent);
+                        forService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         mContext.startService(forService);
-                        //finish();
+
                         break;
 
                     case useIntentService:
                         Intent forIntentService = new Intent(mContext,
                                 BackgroundIntentService.class);
-                        forIntentService.putExtra("studentForDb", studentToHandle);
-                        forIntentService.putExtra("operation",operationOnStudent);
-                        forIntentService.putExtra("oldIdOfStudent",oldIdOfStudent);
+                        forIntentService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
+                        forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
+                        forIntentService.putExtra(Constants.OLD_ID_OF_STUDENT,oldIdOfStudent);
                         mContext.startService(forIntentService);
-                        //finish();
+
                         break;
 
                     case useAsyncTasks:
@@ -289,12 +287,13 @@ public class StudentAddFragment extends Fragment {
 
     }
 
+
     /**
      * When the add student button is clicked for a new student to be added.
      */
     public void onClickButton() {
 
-        getActivity().setTitle("Add New Student");
+        Objects.requireNonNull(getActivity()).setTitle(getString(R.string.add_student_details));
         tvStudentDetails.setText(Constants.ADD_STUDENT_DETAILS);
         mAddStudentButton.findViewById(R.id.btnSaveStudent);
         etStudentRoll.setEnabled(true);
@@ -302,28 +301,29 @@ public class StudentAddFragment extends Fragment {
         mAddStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //to check if the the entered name is in valid format
+
                 if (!Validate.isValidName(etStudentName.getText().toString().trim())) {
                     etStudentName.requestFocus();
-                    Toast.makeText(mContext, "Invalid Name",
+                    Toast.makeText(mContext, getString(R.string.error),
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                //to check if the the entered roll number is in valid format
+
                 if (!Validate.isValidRollNo(etStudentRoll.getText().toString().trim())) {
                     etStudentRoll.requestFocus();
-                    Toast.makeText(mContext, "Invalid Roll No.",
+                    Toast.makeText(mContext, Constants.INVALIDROLL,
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                //to check if the the entered roll number is unique or not
+
                 if (!Validate.isUniqueRollNo(etStudentRoll.getText().toString().trim(),mStudentList)) {
                     etStudentRoll.requestFocus();
-                    Toast.makeText(getContext(), "Roll no. Not Unique",
+                    Toast.makeText(getContext(), Constants.ROLLNOTUNIQUE,
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                //to return name and roll number through bundle to StudentList Fragment and save data using preferred operation
+
+
                 String name = etStudentName.getText().toString().trim();
                 String roll = etStudentRoll.getText().toString().trim();
                 String standard = etStudentStandard.getText().toString().trim();
@@ -341,8 +341,6 @@ public class StudentAddFragment extends Fragment {
                 etStudentStandard.getText().clear();
                 etStudentAge.getText().clear();
 
-
-
                 generateDialog(bundle,Constants.ADD_IT,roll);
             }
         });
@@ -357,25 +355,6 @@ public class StudentAddFragment extends Fragment {
         etStudentStandard.getText().clear();
         etStudentAge.getText().clear();
     }
-
-
-
-    /**Inner broadcast receiver that receives the broadcast if the services have indeed added the elements
-     * in the database.
-     */
-    public class StudentBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            long[] pattern = {0, 100, 1000, 300, 200, 100, 500, 200, 100};
-
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(pattern,-1);
-            Toast.makeText(context,"Broadcast Received",Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
 
 }
 

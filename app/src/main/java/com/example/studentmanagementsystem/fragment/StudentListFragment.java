@@ -31,6 +31,7 @@ import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentSe
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.communicator.Communicator;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
+import com.example.studentmanagementsystem.listener.OnItemViewClickListener;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
 import com.example.studentmanagementsystem.util.SortByName;
@@ -41,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class StudentListFragment extends Fragment {
+public class StudentListFragment extends Fragment implements OnItemViewClickListener {
 
 
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
@@ -53,6 +54,7 @@ public class StudentListFragment extends Fragment {
     private Button addButton;
     private Context mContext;
     private Communicator mCommunicator;
+    private OnItemViewClickListener mListener;
 
 
 
@@ -75,20 +77,19 @@ public class StudentListFragment extends Fragment {
         if(mStudentList.size()<1) {
             mStudentList.addAll(studentHelperDatabase.refreshStudentListfromDb());
         }
-
-        //Adapter has a listener interface implemented.
-        handleDialog();
         setHasOptionsMenu(true);
         return view;
     }
 
     /**
      * Initialise Components.
-     * @param view
+     * @param view  fragment view from XML.
      */
     private void init(View view) {
 
-        adapter = new StudentAdapter(mStudentList);
+
+        mListener = this;
+        adapter = new StudentAdapter(mStudentList,mListener);
         mDialogItems = getResources().getStringArray(R.array.Dialog_Operations);
         rvStudentList = view.findViewById(R.id.rlRecycler_list);
         rvStudentList.setHasFixedSize(true);
@@ -135,70 +136,6 @@ public class StudentListFragment extends Fragment {
 
     }
 
-
-    /** Shows Alert Dialog when the Student in the list is clicked and gives option to View, Edit
-     * or Delete the student.
-     */
-    protected void handleDialog() {
-        adapter.setOnItemClickListener(new StudentAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(final int position) {//interface to implement onClick.
-
-                //Set the position based on the Viewholder selected by the listener.
-                setPositionStudent(position);
-
-                final String[] items = {"View", "Edit", "Delete"};
-                final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
-
-                //Alert Dialog that has context of this activity.
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Choose from below");
-                final StudentTemplate whichStudent = mStudentList.get(position);
-
-
-                //Sets the items of the Dialog.
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-
-                        switch (which) {
-                            case viewStudent:
-                               viewDetails(whichStudent);
-                                break;
-
-                            case editStudent:
-                                Bundle bundle = new Bundle();
-                                bundle.putString(Constants.CODE_TO_ADD_STUDENT,Constants.UPDATE_IT);
-                                bundle.putParcelable(Constants.THISSTUDENT,whichStudent);
-                                mCommunicator.communicateUpdate(bundle);
-
-                                break;
-                            //Delete the Student.
-                            case deleteStudent:
-                                studentDelete(position);
-                                break;
-                        }
-
-                    }
-                });
-                AlertDialog mAlert = builder.create();
-                mAlert.show();
-            }
-        });
-    }
-
-    //Setter Method for postion of student thats clicked on the recyclerview.
-    protected void setPositionStudent(int position) {
-        positionStudent = position;
-    }
-
-    protected int getPositionStudent() {
-        return this.positionStudent;
-    }
-
-
     /**
      * When the second fragment makes a student object either by adding new or updating the old one,
      * this function checks how to add it back to the Array List.
@@ -214,9 +151,9 @@ public class StudentListFragment extends Fragment {
             mStudentList.add(student);
             adapter.notifyDataSetChanged();
 
-        //Update old student.
+            //Update old student.
         }else if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.UPDATE_IT)){
-            StudentTemplate student=mStudentList.get(getPositionStudent());
+            StudentTemplate student=mStudentList.get(positionStudent);
             student.setStudentTemplateRoll(bundle.getString(Constants.ROLL_NO));
             student.setStudentTemplateName(bundle.getString(Constants.NAME));
             student.setStudentTemplateStandard(bundle.getString(Constants.STANDARD));
@@ -227,9 +164,20 @@ public class StudentListFragment extends Fragment {
     }
 
     /**
+     * To edit the student selected on the clicklistener
+     * @param whichStudent student selected.
+     */
+    private void editStudent(StudentTemplate whichStudent){
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.CODE_TO_ADD_STUDENT,Constants.UPDATE_IT);
+        bundle.putParcelable(Constants.THISSTUDENT,whichStudent);
+        mCommunicator.communicateUpdate(bundle);
+    }
+
+    /**
      * When we click the student on the recycler view's list, this funciton sends an intent to
      * open another activity that shows the student.
-     * @param student
+     * @param student selected on click listener.
      */
     private void viewDetails(StudentTemplate student){
 
@@ -331,7 +279,7 @@ public class StudentListFragment extends Fragment {
 
     }
 
-    //Create the options for the Menu.
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
@@ -340,7 +288,7 @@ public class StudentListFragment extends Fragment {
         MenuItem sortByName = menu.findItem(R.id.sortbyname);
         MenuItem sortByRoll = menu.findItem(R.id.sortbyroll);
 
-        //Set your sortByName item.
+
         sortByName.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -351,7 +299,7 @@ public class StudentListFragment extends Fragment {
             }
         });
 
-        //Set your sortByRoll item.
+
         sortByRoll.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -362,7 +310,7 @@ public class StudentListFragment extends Fragment {
 
             }
         });
-        //Switch item is set.
+
         item.setActionView(R.layout.switch_layout);
         Switch switcherLayout = menu.findItem(R.id.switchitem).getActionView().
                 findViewById(R.id.switcher);
@@ -380,5 +328,51 @@ public class StudentListFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    /**Shows Alert Dialog when the Student in the list is clicked and gives option to View, Edit
+     * or Delete the student.
+     *
+     * @param position is the position of the student selected.
+     */
+    @Override
+    public void onItemClick(int position) {
 
+        //Set the position based on the Viewholder selected by the listener.
+        positionStudent = position;
+
+        final String[] items = {"View", "Edit", "Delete"};
+        final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
+
+        //Alert Dialog that has context of this activity.
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Choose from below");
+        final StudentTemplate whichStudent = mStudentList.get(position);
+
+
+        //Sets the items of the Dialog.
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+                switch (which) {
+                    case viewStudent:
+                        viewDetails(whichStudent);
+                        break;
+
+                    case editStudent:
+                        editStudent(whichStudent);
+
+                        break;
+                    //Delete the Student.
+                    case deleteStudent:
+                        studentDelete(positionStudent);
+                        break;
+                }
+
+            }
+        });
+        AlertDialog mAlert = builder.create();
+        mAlert.show();
+    }
 }
