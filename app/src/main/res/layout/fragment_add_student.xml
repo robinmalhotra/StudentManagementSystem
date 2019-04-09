@@ -17,22 +17,22 @@
             android:id="@+id/tvAddStudentDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin10"
+            android:layout_marginTop="@dimen/marginmedium"
             android:text="@string/add_student_details"
             android:textAlignment="center"
             android:textColor="@color/cardview_light_background"
-            android:textSize="@dimen/margin20"
+            android:textSize="@dimen/marginlarge"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvStudentDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin10"
+            android:layout_marginTop="@dimen/marginmedium"
             android:text="@string/details_student"
             android:textAlignment="center"
             android:textColor="@color/cardview_light_background"
-            android:textSize="@dimen/margin20"
+            android:textSize="@dimen/marginlarge"
             android:textStyle="bold"
             android:visibility="gone" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:text="@string/name"
             android:textColor="@color/colorHolder" />
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:ems="10"
             android:hint="@string/namehint"
             android:inputType="textPersonName"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:text="@string/roll_no"
             android:textColor="@color/colorHolder" />
 
@@ -68,7 +68,7 @@
             android:id="@+id/etStudentRollNumberText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:hint="@string/rollhint"
             android:inputType="number"
             android:textColor="@color/cardview_light_background" />
@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:layout_gravity="center"
             android:text="@string/standard"
             android:textColor="@color/colorHolder" />
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:ems="10"
             android:hint="@string/standardhint"
             android:inputType="number"
@@ -96,7 +96,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:layout_gravity="center"
             android:text="@string/age"
             android:textColor="@color/colorHolder" />
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:ems="10"
             android:hint="@string/agehint"
             android:inputType="number"
@@ -116,7 +116,7 @@
             android:id="@+id/btnSaveStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/marginlarge"
             android:text="@string/save_student_button"
             android:visibility="visible"
             android:background="@color/colorPrimary"/>

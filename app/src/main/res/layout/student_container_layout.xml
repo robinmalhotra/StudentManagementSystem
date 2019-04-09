@@ -4,19 +4,19 @@
     android:id="@+id/recycler_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin2"
-    android:layout_marginTop="@dimen/margin2"
+    android:layout_margin="@dimen/marginsmall"
+    android:layout_marginTop="@dimen/marginsmall"
     android:background="@color/colorPrimaryDark"
     android:onClick="clickStudent"
     android:orientation="horizontal"
-    android:padding="@dimen/margin10">
+    android:padding="@dimen/marginmedium">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/colorPrimaryDark"
-        app:cardCornerRadius="@dimen/dp4"
-        app:cardElevation="@dimen/dp2">
+        app:cardCornerRadius="@dimen/cornermargin"
+        app:cardElevation="@dimen/cornermarginsmall">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
 
             android:textColor="@color/white"
-            android:textSize="@dimen/dp20"
+            android:textSize="@dimen/textsizemedium"
             />
 
         <TextView
@@ -37,14 +37,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp17" />
+            android:textSize="@dimen/textsizemedium" />
 
         <TextView
             android:id="@+id/tvStandardEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp17"
+            android:textSize="@dimen/textsizemedium"
 
             android:layout_below="@id/tvRollEmpty"/>
 
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp17"
+            android:textSize="@dimen/textsizemedium"
             android:layout_below="@id/tvStandardEmpty"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>

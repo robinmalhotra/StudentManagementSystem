@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
@@ -25,27 +26,14 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
     public BackgroundAsyncTasks(Context context) {
         this.context=context;
-
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-//        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-//        vibrator.vibrate(100);
-        //Toast.makeText(context, "Async Post Execute", Toast.LENGTH_SHORT).show();
-
-        StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
-
-        if(dbHelper.isSuccess()) {
-
-            Intent intent = new Intent();
-            intent.setAction(FILTER_ACTION_KEY);
-            String echoMessage = Constants.BROADCAST ;
-            LocalBroadcastManager.getInstance(context).
-                    sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
-        }
-
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(100);
+        Toast.makeText(context, "Async Post Execute", Toast.LENGTH_SHORT).show();
 
     }
 

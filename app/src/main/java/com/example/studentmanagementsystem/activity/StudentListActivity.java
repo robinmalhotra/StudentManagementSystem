@@ -67,11 +67,6 @@ class StudentListActivity extends AppCompatActivity implements Communicator {
         changeTab();
     }
 
-    @Override
-    public void changeFragmentTab() {
-        changeTab();
-    }
-
 
     @Override
     public void onBackPressed() {

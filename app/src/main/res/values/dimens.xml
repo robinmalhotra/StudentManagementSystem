@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="marginbutton">20dp</dimen>
-    <dimen name="margin20">20dp</dimen>
-    <dimen name="margin10">10dp</dimen>
-    <dimen name="margin2">2dp</dimen>
-    <dimen name="dp4">4dp</dimen>
-    <dimen name="dp2">2dp</dimen>
-    <dimen name="dp17">17dp</dimen>
-    <dimen name="sp17">17sp</dimen>
-    <dimen name="dp20">20dp</dimen>
+    <dimen name="marginlarge">20dp</dimen>
+    <dimen name="marginmedium">10dp</dimen>
+    <dimen name="marginsmall">2dp</dimen>
+    <dimen name="cornermargin">4dp</dimen>
+    <dimen name="cornermarginsmall">2dp</dimen>
+    <dimen name="textsizemedium">17sp</dimen>
+
 </resources>

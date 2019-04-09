@@ -41,7 +41,6 @@ public class CreateStudentActivity extends AppCompatActivity implements Communic
     protected void onStart() {
         super.onStart();
         mStudentAddFragment.viewMode(studentTemplate);
-        Log.d("yyyyyy", "onStart: "+studentTemplate.getStudentTemplateName());
     }
 
     @Override
@@ -54,9 +53,5 @@ public class CreateStudentActivity extends AppCompatActivity implements Communic
 
     }
 
-    @Override
-    public void changeFragmentTab() {
-
-    }
 }
 
