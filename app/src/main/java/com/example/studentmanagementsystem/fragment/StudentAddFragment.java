@@ -29,6 +29,7 @@ import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.broadcastreceiver.StudentBroadcastReceiver;
 import com.example.studentmanagementsystem.communicator.Communicator;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
+import com.example.studentmanagementsystem.dialog.GenerateDialog;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
 import com.example.studentmanagementsystem.validate.Validate;
@@ -38,13 +39,14 @@ import java.util.Objects;
 
 public class StudentAddFragment extends Fragment {
     private String oldIdOfStudent;
-    private StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
+    private StudentBroadcastReceiver studentBroadcastReceiver;
     private Button mAddStudentButton;
     private EditText etStudentName, etStudentRoll, etStudentStandard, etStudentAge;
     private TextView tvStudentDetails;
     private Context mContext;
     private Communicator mCommunicator;
     private ArrayList<StudentTemplate> mStudentList = new ArrayList<StudentTemplate>();
+    private GenerateDialog generateDialog;
 
 
     @Override
@@ -74,13 +76,6 @@ public class StudentAddFragment extends Fragment {
 
     }
 
-    public String getOldIdOfStudent() {
-        return oldIdOfStudent;
-    }
-
-    public void setOldIdOfStudent(String oldIdOfStudent) {
-        this.oldIdOfStudent = oldIdOfStudent;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,6 +91,8 @@ public class StudentAddFragment extends Fragment {
      * @param view fragment view from XML.
      */
     public void init(View view) {
+        generateDialog = new GenerateDialog(mContext);
+        studentBroadcastReceiver = new StudentBroadcastReceiver(mContext);
          etStudentName = view.findViewById(R.id.etStudentNameText);
          etStudentRoll = view.findViewById(R.id.etStudentRollNumberText);
          etStudentStandard = view.findViewById(R.id.etStudentStandardText);
@@ -126,7 +123,7 @@ public class StudentAddFragment extends Fragment {
      *method to update details of student
      *@param bundle - to pass data
      */
-    public void updateStudent(Bundle bundle){
+    public void addOrUpdateStudentInCreateStudentFragment(Bundle bundle){
 
         if(Objects.equals(bundle.getString(Constants.CODE_TO_ADD_STUDENT), Constants.UPDATE_IT)) {
 
@@ -141,7 +138,7 @@ public class StudentAddFragment extends Fragment {
 
             mStudentList=bundle.getParcelableArrayList(Constants.STUDENT_LIST_FROM_MAIN);
 
-            setOldIdOfStudent(studentTemplate.getStudentTemplateRoll());
+            oldIdOfStudent = studentTemplate.getStudentTemplateRoll();
 
             editMode();
 
@@ -212,7 +209,8 @@ public class StudentAddFragment extends Fragment {
                     bundle.putString(Constants.ROLL_NO, roll);
                     bundle.putString(Constants.STANDARD, standard);
                     bundle.putString(Constants.AGE, age);
-                    generateDialog(bundle, Constants.UPDATE_IT, getOldIdOfStudent());
+
+                    generateDialog(bundle,Constants.UPDATE_IT, oldIdOfStudent);
                     clearDetails();
                 }
             }
@@ -235,9 +233,9 @@ public class StudentAddFragment extends Fragment {
         studentToHandle.setStudentTemplateRoll(sendBundle.getString(Constants.ROLL_NO));
         studentToHandle.setStudentTemplateAge(sendBundle.getString(Constants.AGE));
 
-        final String[] items = {getString(R.string.alert_service),
-                getString(R.string.alert_intentservice),
-                getString(R.string.alert_async)};
+        final String[] items = {Constants.SERVICE,
+                Constants.INTENTSERVICE,
+                Constants.ASYNC};
         final int useService = 0, useIntentService = 1, useAsyncTasks = 2;
 
         //Alert Dialog that has context of this activity.
@@ -275,6 +273,7 @@ public class StudentAddFragment extends Fragment {
 
                         BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(mContext);
                         backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,oldIdOfStudent);
+
                         break;
                 }
                 mCommunicator.communicateAdd(sendBundle);

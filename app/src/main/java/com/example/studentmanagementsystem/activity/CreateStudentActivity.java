@@ -53,5 +53,10 @@ public class CreateStudentActivity extends AppCompatActivity implements Communic
     public void communicateUpdate(Bundle bundle) {
 
     }
+
+    @Override
+    public void changeFragmentTab() {
+
+    }
 }
 

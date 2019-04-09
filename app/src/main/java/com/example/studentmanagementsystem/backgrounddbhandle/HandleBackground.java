@@ -47,9 +47,17 @@ public class HandleBackground {
                 databaseHelper.deleteStudentInDb(studentForDb);
                 break;
         }
-        intent.setAction(FILTER_ACTION_KEY);
-        String echoMessage = Constants.BROADCAST ;
-        LocalBroadcastManager.getInstance(context).
-                sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
+
+
+
+
+        if(databaseHelper.isSuccess()) {
+
+            intent.setAction(FILTER_ACTION_KEY);
+            String echoMessage = Constants.BROADCAST ;
+            LocalBroadcastManager.getInstance(context).
+                    sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
+        }
+
     }
 }

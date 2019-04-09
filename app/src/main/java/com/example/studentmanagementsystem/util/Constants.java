@@ -34,6 +34,11 @@ public interface Constants {
     String VIEW_STANDARD = "viewstandard";
     String VIEW_AGE = "viewage";
 
+    String VIEWMESSAGE = "View";
+    String EDITMESSAGE = "Edit";
+    String DELETEMESSAGE = "Delete";
+    String BACKPRESS = "Press Back Again To Exit";
+
     String NAME = "name";
     String ROLL_NO = "rollno";
     String STANDARD = "standard";
@@ -49,6 +54,10 @@ public interface Constants {
     String VIEW = "view";
     String INVALIDROLL = "Invalid Roll No.";
     String ROLLNOTUNIQUE = "Roll no. Not Unique";
+
+    String SERVICE = "Service";
+    String INTENTSERVICE ="Intent Service";
+    String ASYNC = "Asynctasks";
 
 
 }

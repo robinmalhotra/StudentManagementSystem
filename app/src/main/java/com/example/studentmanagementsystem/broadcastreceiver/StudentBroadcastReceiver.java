@@ -28,12 +28,10 @@ public class StudentBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Activity activity = (Activity)acitivityContext;
-        activity.finish();
 
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500);
-        Toast.makeText(acitivityContext,"Broadcast Received",Toast.LENGTH_SHORT).show();
+        Toast.makeText(acitivityContext,"Database Updated",Toast.LENGTH_SHORT).show();
 
     }
 

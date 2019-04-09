@@ -2,14 +2,18 @@ package com.example.studentmanagementsystem.backgrounddbhandle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Vibrator;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
+
+import static com.example.studentmanagementsystem.util.Constants.FILTER_ACTION_KEY;
 
 public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
 
@@ -18,12 +22,32 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
     private SQLiteDatabase db;
     String oldIdofStudent;
 
+
     public BackgroundAsyncTasks(Context context) {
         this.context=context;
-        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(100);
+
     }
 
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+//        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+//        vibrator.vibrate(100);
+        //Toast.makeText(context, "Async Post Execute", Toast.LENGTH_SHORT).show();
+
+        StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
+
+        if(dbHelper.isSuccess()) {
+
+            Intent intent = new Intent();
+            intent.setAction(FILTER_ACTION_KEY);
+            String echoMessage = Constants.BROADCAST ;
+            LocalBroadcastManager.getInstance(context).
+                    sendBroadcast(intent.putExtra(Constants.BROADCAST_MESSAGE, echoMessage));
+        }
+
+
+    }
 
     @Override
     protected Void doInBackground(Object... objects) {
@@ -31,12 +55,14 @@ public class BackgroundAsyncTasks extends AsyncTask<Object,Void,Void> {
         StudentTemplate studentForDb = (StudentTemplate) objects[0];
         String operationOnStudent = (String) objects[1];
 
+        StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
+
         if(objects[2]!=null){
             oldIdofStudent = (String) objects[2];
         }
 
 
-        StudentHelperDatabase dbHelper=new StudentHelperDatabase(context);
+
         switch (operationOnStudent){
             case Constants.ADD_IT:
 

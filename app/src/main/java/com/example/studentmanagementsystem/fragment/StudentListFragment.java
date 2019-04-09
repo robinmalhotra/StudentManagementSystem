@@ -31,6 +31,7 @@ import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundIntentSe
 import com.example.studentmanagementsystem.backgrounddbhandle.BackgroundService;
 import com.example.studentmanagementsystem.communicator.Communicator;
 import com.example.studentmanagementsystem.database.StudentHelperDatabase;
+import com.example.studentmanagementsystem.dialog.GenerateDialog;
 import com.example.studentmanagementsystem.listener.OnItemViewClickListener;
 import com.example.studentmanagementsystem.model.StudentTemplate;
 import com.example.studentmanagementsystem.util.Constants;
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class StudentListFragment extends Fragment implements OnItemViewClickListener {
 
@@ -55,6 +57,7 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
     private Context mContext;
     private Communicator mCommunicator;
     private OnItemViewClickListener mListener;
+    private GenerateDialog generateDialog;
 
 
 
@@ -88,6 +91,7 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
     private void init(View view) {
 
 
+        generateDialog = new GenerateDialog(mContext);
         mListener = this;
         adapter = new StudentAdapter(mStudentList,mListener);
         mDialogItems = getResources().getStringArray(R.array.Dialog_Operations);
@@ -141,10 +145,10 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
      * this function checks how to add it back to the Array List.
      * @param bundle
      */
-    public void addStudent(Bundle bundle) {
+    public void addOrUpdateStudentInList(Bundle bundle) {
 
         //Add new student.
-        if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.ADD_IT)) {
+        if(Objects.equals(bundle.getString(Constants.CODE_TO_ADD_STUDENT), Constants.ADD_IT)) {
             StudentTemplate student = new StudentTemplate(bundle.getString(Constants.NAME),
                     bundle.getString(Constants.ROLL_NO),bundle.getString(Constants.STANDARD),
                     bundle.getString(Constants.AGE));
@@ -152,7 +156,7 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
             adapter.notifyDataSetChanged();
 
             //Update old student.
-        }else if(bundle.getString(Constants.CODE_TO_ADD_STUDENT).equals(Constants.UPDATE_IT)){
+        }else if(Objects.equals(bundle.getString(Constants.CODE_TO_ADD_STUDENT), Constants.UPDATE_IT)){
             StudentTemplate student=mStudentList.get(positionStudent);
             student.setStudentTemplateRoll(bundle.getString(Constants.ROLL_NO));
             student.setStudentTemplateName(bundle.getString(Constants.NAME));
@@ -201,8 +205,9 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
             public void onClick(DialogInterface dialog, int which) {
 
 
-                generateDialog(mStudentList.get(position),Constants.DELETE_IT);
+                generateDialog.generateDialogOnTouch(mStudentList.get(position),Constants.DELETE_IT);
                 mStudentList.remove(position);
+                adapter.notifyDataSetChanged();
 
             }
         });
@@ -215,69 +220,6 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
         deleteDialog.show();
     }
 
-
-    /** Generates Dialog box when we press Delete option in the Dialog already on the screen.
-     * Choice 1: via Service
-     * Choice 2: via Intent Service
-     * Choice 3: via AsyncTasks
-     * param@ studentToHandle: Student model object
-     * param@ operationOnStudent: To save the delete Operation in the Background db Handlers.
-     */
-    private void generateDialog(final StudentTemplate studentToHandle, final String operationOnStudent) {
-
-        final String[] items = {getString(R.string.alert_service),
-                getString(R.string.alert_intentservice),
-                getString(R.string.alert_async)};
-        final int useService = 0, useIntentService = 1, useAsyncTasks = 2;
-
-        //Alert Dialog that has context of this activity.
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(R.string.userchoice_dbhandle_alert);
-        //Sets the items of the Dialog.
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.dismiss();
-
-                switch (which) {
-                    case useService:
-
-                        //Send the intent if the User chooses the VIEW option.
-                        Intent forService = new Intent(getActivity(),
-                                BackgroundService.class);
-                        forService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
-                        forService.putExtra(Constants.OPERATION,operationOnStudent);
-                        mContext.startService(forService);
-                        break;
-
-                    //Send the intent if the User chooses the EDIT option.
-                    case useIntentService:
-
-                        Intent forIntentService = new Intent(getActivity(),
-                                BackgroundIntentService.class);
-                        forIntentService.putExtra(Constants.STUDENT_FOR_DB, studentToHandle);
-                        forIntentService.putExtra(Constants.OPERATION,operationOnStudent);
-                        mContext.startService(forIntentService);
-
-                        break;
-                    //Delete the Student.
-                    case useAsyncTasks:
-                        BackgroundAsyncTasks backgroundAsyncTasks = new BackgroundAsyncTasks(mContext);
-                        backgroundAsyncTasks.execute(studentToHandle,operationOnStudent,null);
-
-                        break;
-                    default:
-                        break;
-                }
-                adapter.notifyDataSetChanged();
-
-            }
-        });
-        AlertDialog mAlert = builder.create();
-        mAlert.show();
-
-    }
 
 
     @Override
@@ -339,7 +281,7 @@ public class StudentListFragment extends Fragment implements OnItemViewClickList
         //Set the position based on the Viewholder selected by the listener.
         positionStudent = position;
 
-        final String[] items = {"View", "Edit", "Delete"};
+        final String[] items = {Constants.VIEWMESSAGE, Constants.EDITMESSAGE, Constants.DELETEMESSAGE};
         final int viewStudent = 0, editStudent = 1, deleteStudent = 2;
 
         //Alert Dialog that has context of this activity.

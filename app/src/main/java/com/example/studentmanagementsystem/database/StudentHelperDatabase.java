@@ -3,23 +3,21 @@ package com.example.studentmanagementsystem.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Vibrator;
-import android.widget.Toast;
 
 
 import com.example.studentmanagementsystem.model.StudentTemplate;
+import com.example.studentmanagementsystem.util.Constants;
 
 import java.util.ArrayList;
 
 
 public class StudentHelperDatabase extends SQLiteOpenHelper {
 
-    private static final String STUDENT_DB = "student.db";
-    private static final String STUDENT_TABLE = "student_table";
+    private static final String STUDENT_DB = Constants.STUDENT_DB;
+    private static final String STUDENT_TABLE = Constants.STUDENT_TABLE;
     private static final int DATABASE_VERSION = 1;
 
     /* Declare Columns of the Table. */
@@ -27,15 +25,14 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
     private static final String COL_2_STUDENT_NAME = "name";
     private static final String COL_3_STUDENT_STANDARD = "standard";
     private static final String COL_4_STUDENT_AGE = "age";
+    private boolean success = false;
+
 
     /* Constructor to setup a new Database. */
     public StudentHelperDatabase(Context context) {
 
         super(context, STUDENT_DB, null, DATABASE_VERSION);
     }
-
-
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -74,9 +71,7 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
         values.put(COL_4_STUDENT_AGE, student.getStudentTemplateAge());
         db.insert(STUDENT_TABLE, null, values);
 
-
-
-
+        success = true;
         db.close();
     }
 
@@ -85,6 +80,7 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         db.delete(STUDENT_TABLE, COL_1_STUDENT_ROLL + "=?", new String[]{studentTemplate.getStudentTemplateRoll()});
+        success = true;
             db.close();
 
     }
@@ -109,6 +105,7 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
 
             db.update(STUDENT_TABLE, values, COL_1_STUDENT_ROLL + "=?",
                     new String[]{oldRollId});
+            success = true;
             db.close();
 
 
@@ -146,7 +143,9 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
                         studentAge);
 
                       listToInflate.add(studentToShow);
+
         }
+        success = true;
         cursor.close();
         db.close();
         return listToInflate;
@@ -167,9 +166,14 @@ public class StudentHelperDatabase extends SQLiteOpenHelper {
                 studentToAdd.setStudentTemplateStandard(cursor.getString(cursor.getColumnIndex(COL_3_STUDENT_STANDARD)));
                 studentToAdd.setStudentTemplateAge(cursor.getString(cursor.getColumnIndex(COL_4_STUDENT_AGE)));
             }
-
+        success = true;
         return studentToAdd;
     }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
 }
 
 
